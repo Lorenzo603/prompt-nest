@@ -1,0 +1,2 @@
+# Sample file, rename to "scripts-config.txt", remove this comment and fill in real details below.
+REMOTE_SERVER="user@host.net"
