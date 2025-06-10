@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React, { useRef } from "react";
 import PromptForm from "../components/PromptForm";
-import PromptList from "../components/PromptList";
+import PromptSearch from "../components/PromptSearch";
 
 export default function Home() {
   const promptListRef = useRef();
@@ -16,7 +16,7 @@ export default function Home() {
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">🪺 PromptNest 🪺</h1>
       <PromptForm onPromptAdded={handlePromptAdded} />
-      <PromptList ref={promptListRef} />
+      <PromptSearch />
     </div>
   );
 }
