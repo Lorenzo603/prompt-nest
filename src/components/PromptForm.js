@@ -2,13 +2,16 @@
 
 import React, { useState } from "react";
 
+const DEFAULT_PROMPT_TYPE = "image"; // Default type for the prompt
+
 const PromptForm = ({ onPromptAdded }) => {
-    const [prompt, setPrompt] = useState("");
+    const [promptText, setPromptText] = useState("");
+    const [promptType, setPromptType] = useState(DEFAULT_PROMPT_TYPE);
     const [error, setError] = useState(null);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (!prompt.trim()) {
+        if (!promptText.trim()) {
             setError("Prompt cannot be empty.");
             return;
         }
@@ -16,11 +19,12 @@ const PromptForm = ({ onPromptAdded }) => {
             const response = await fetch("/api/prompts", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt }),
+                body: JSON.stringify({"prompt": { "text": promptText, "type": promptType }}),
             });
             const result = await response.json();
             console.log(result);
-            setPrompt(""); // Clear input on success
+            setPromptText(""); // Clear input on success
+            setPromptType(DEFAULT_PROMPT_TYPE); // Reset type to default
             setError(null);
             onPromptAdded();
         } catch (error) {
@@ -31,10 +35,20 @@ const PromptForm = ({ onPromptAdded }) => {
     return (
         <>
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center gap-2 bg-white p-4 rounded-lg shadow mb-4 border border-gray-200">
+                <select
+                    value={promptType}
+                    onChange={e => setPromptType(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
+                >
+                    <option value="code">Code</option>
+                    <option value="image">Image</option>
+                    <option value="audio">Audio</option>
+                    <option value="other">Other</option>
+                </select>
                 <input
                     type="text"
-                    value={prompt}
-                    onChange={(event) => setPrompt(event.target.value)}
+                    value={promptText}
+                    onChange={(event) => setPromptText(event.target.value)}
                     placeholder="Enter a prompt"
                     className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
                 />

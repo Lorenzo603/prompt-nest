@@ -8,6 +8,6 @@ export const getPrompts = async () => {
 };
 
 export const addPrompt = async (prompt) => {
-  await db.insert(promptsTable).values({ text: prompt, creationDate: new Date() });
+  await db.insert(promptsTable).values({ text: prompt.text, creationDate: new Date(), type: prompt.type });
   return { message: "Prompt added successfully" };
 };
