@@ -8,6 +8,10 @@ const PromptForm = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        if (!prompt.trim()) {
+            setError("Prompt cannot be empty.");
+            return;
+        }
         try {
             const response = await fetch("/api/prompts", {
                 method: "POST",
@@ -16,6 +20,8 @@ const PromptForm = () => {
             });
             const result = await response.json();
             console.log(result);
+            setPrompt(""); // Clear input on success
+            setError(null);
         } catch (error) {
             setError(error.message);
         }
