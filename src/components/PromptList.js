@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 
 const PromptList = () => {
@@ -9,6 +11,7 @@ const PromptList = () => {
             try {
                 const response = await fetch("/api/prompts");
                 const prompts = await response.json();
+                console.log(prompts);
                 setPrompts(prompts);
             } catch (error) {
                 setError(error.message);
@@ -19,8 +22,8 @@ const PromptList = () => {
 
     return (
         <ul>
-            {prompts.map((prompt, index) => (
-                <li key={index}>{prompt}</li>
+            {prompts.map((prompt) => (
+                <li key={prompt.id}>{prompt.text} - {prompt.creationDate}</li>
             ))}
             {error && <div style={{ color: "red" }}>{error}</div>}
         </ul>
