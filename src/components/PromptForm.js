@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-const PromptForm = () => {
+const PromptForm = ({ onPromptAdded }) => {
     const [prompt, setPrompt] = useState("");
     const [error, setError] = useState(null);
 
@@ -22,6 +22,7 @@ const PromptForm = () => {
             console.log(result);
             setPrompt(""); // Clear input on success
             setError(null);
+            onPromptAdded();
         } catch (error) {
             setError(error.message);
         }
