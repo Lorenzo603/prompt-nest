@@ -29,16 +29,24 @@ const PromptForm = ({ onPromptAdded }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                value={prompt}
-                onChange={(event) => setPrompt(event.target.value)}
-                placeholder="Enter a prompt"
-            />
-            <button type="submit">Add Prompt</button>
-            {error && <div style={{ color: "red" }}>{error}</div>}
-        </form>
+        <>
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center gap-2 bg-white p-4 rounded-lg shadow mb-4 border border-gray-200">
+                <input
+                    type="text"
+                    value={prompt}
+                    onChange={(event) => setPrompt(event.target.value)}
+                    placeholder="Enter a prompt"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
+                />
+                <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-semibold"
+                >
+                    Add Prompt
+                </button>
+            </form>
+            {error && <div className="text-red-500 w-full mt-2 text-sm">{error}</div>}
+        </>
     );
 };
 
