@@ -7,6 +7,7 @@ const DEFAULT_PROMPT_TYPE = "image"; // Default type for the prompt
 const PromptForm = ({ onPromptAdded }) => {
     const [promptText, setPromptText] = useState("");
     const [promptType, setPromptType] = useState(DEFAULT_PROMPT_TYPE);
+    const [tags, setTags] = useState("");
     const [error, setError] = useState(null);
 
     const handleSubmit = async (event) => {
@@ -16,15 +17,17 @@ const PromptForm = ({ onPromptAdded }) => {
             return;
         }
         try {
+            const tagList = tags.split(",").map(t => t.trim()).filter(Boolean);
             const response = await fetch("/api/prompts", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({"prompt": { "text": promptText, "type": promptType }}),
+                body: JSON.stringify({ text: promptText, type: promptType, tags: tagList }),
             });
             const result = await response.json();
             console.log(result);
             setPromptText(""); // Clear input on success
             setPromptType(DEFAULT_PROMPT_TYPE); // Reset type to default
+            setTags("");
             setError(null);
             onPromptAdded();
         } catch (error) {
@@ -50,6 +53,13 @@ const PromptForm = ({ onPromptAdded }) => {
                     value={promptText}
                     onChange={(event) => setPromptText(event.target.value)}
                     placeholder="Enter a prompt"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
+                />
+                <input
+                    type="text"
+                    value={tags}
+                    onChange={e => setTags(e.target.value)}
+                    placeholder="Tags (comma separated)"
                     className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
                 />
                 <button

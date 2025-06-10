@@ -7,3 +7,8 @@ export const promptsTable = pgTable("prompts", {
   type: varchar({ length: 32 }), // e.g., 'code', 'image', 'audio', etc.
   tags: text().array().default([]), // optional list of tags
 });
+
+export const tagsTable = pgTable("tags", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 64 }).notNull().unique(),
+});

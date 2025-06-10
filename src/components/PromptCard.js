@@ -10,6 +10,11 @@ const PromptCard = ({ prompt }) => {
                 <span className="text-lg font-semibold text-gray-800">{prompt.text}</span>
             </div>
             <div className="text-xs text-gray-500">{new Date(prompt.creationDate).toLocaleString()}</div>
+            <div className="flex flex-wrap gap-2">
+                {prompt.tags && prompt.tags.length > 0 && prompt.tags.map((tag) => (
+                    <span key={tag} className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">{tag}</span>
+                ))}
+            </div>
         </div>
     );
 };

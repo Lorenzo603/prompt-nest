@@ -7,7 +7,7 @@ export async function GET() {
 }
 
 export async function POST(request) {
-  const { prompt } = await request.json();
-  const result = await addPrompt(prompt);
+  const { text, type, tags } = await request.json();
+  const result = await addPrompt({ text, type, tags });
   return NextResponse.json(result, { status: 201 });
 }
