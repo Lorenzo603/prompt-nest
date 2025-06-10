@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import PromptCard from "./PromptCard";
 
 const PromptList = React.forwardRef((props, ref) => {
     const [prompts, setPrompts] = useState([]);
@@ -25,12 +26,12 @@ const PromptList = React.forwardRef((props, ref) => {
     }));
 
     return (
-        <ul>
+        <div className="flex flex-col gap-2 mt-4">
             {prompts.map((prompt) => (
-                <li key={prompt.id}>{prompt.text} - {prompt.creationDate}</li>
+                <PromptCard key={prompt.id} prompt={prompt} />
             ))}
-            {error && <div style={{ color: "red" }}>{error}</div>}
-        </ul>
+            {error && <div className="text-red-500 mt-2">{error}</div>}
+        </div>
     );
 });
 
