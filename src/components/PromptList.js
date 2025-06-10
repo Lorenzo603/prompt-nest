@@ -35,4 +35,6 @@ const PromptList = React.forwardRef((props, ref) => {
     );
 });
 
+PromptList.displayName = "PromptList";
+
 export default PromptList;
