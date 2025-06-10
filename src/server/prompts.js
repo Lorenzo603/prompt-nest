@@ -1,8 +1,9 @@
+import { desc } from "drizzle-orm";
 import db from "../db";
 import { promptsTable } from "../db/schema";
 
 export const getPrompts = async () => {
-  const prompts = await db.select().from(promptsTable);
+  const prompts = await db.select().from(promptsTable).orderBy(desc(promptsTable.creationDate));
   return prompts;
 };
 
