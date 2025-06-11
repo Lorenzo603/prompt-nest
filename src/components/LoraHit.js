@@ -142,7 +142,7 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
             <div className="p-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Delete Lora</h3>
               <p className="text-gray-600 mb-6">
-                Are you sure you want to delete "<strong>{hit.name}</strong>"? This action cannot be undone.
+                Are you sure you want to delete &ldquo;<strong>{hit.name}</strong>&rdquo;? This action cannot be undone.
               </p>
               
               <div className="flex gap-3 justify-end">

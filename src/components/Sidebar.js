@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const links = [
 	{
@@ -67,9 +68,11 @@ export default function Sidebar() {
 							collapsed ? "justify-center" : ""
 						}`}
 					>
-						<img
+						<Image
 							src={link.icon}
 							alt={link.alt}
+							width={28}
+							height={28}
 							className="w-7 h-7"
 							style={{ filter: "invert(1)" }}
 						/>
