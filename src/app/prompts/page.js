@@ -12,6 +12,11 @@ export default function PromptsPage() {
       promptSearchRef.current.refresh();
     }
   };
+  const handlePromptUpdated = () => {
+    if (promptSearchRef.current) {
+      promptSearchRef.current.refresh();
+    }
+  };
   return (
     <div className="flex">
       <Sidebar />
@@ -19,7 +24,7 @@ export default function PromptsPage() {
         <div className="container mx-auto p-4">
           <h1 className="text-3xl font-bold mb-4">Prompts</h1>
           <PromptForm onPromptAdded={handlePromptAdded} />
-          <PromptSearch ref={promptSearchRef} />
+          <PromptSearch ref={promptSearchRef} onPromptUpdated={handlePromptUpdated} />
         </div>
       </main>
     </div>

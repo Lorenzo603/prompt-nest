@@ -51,3 +51,57 @@ export const addPrompt = async ({ text, type, tags }) => {
 
   return { message: "Prompt added successfully" };
 };
+
+export const updatePrompt = async ({ id, text, type, tags }) => {
+  // Ensure tags exist in tagsTable and get their names
+  let tagNames = Array.isArray(tags) ? tags : [];
+  for (const tag of tagNames) {
+    const existing = await db.select().from(tagsTable).where(eq(tagsTable.name, tag));
+    if (existing.length === 0) {
+      await db.insert(tagsTable).values({ name: tag });
+    }
+  }
+  
+  const [updated] = await db.update(promptsTable)
+    .set({ 
+      text: text, 
+      type: type, 
+      tags: tagNames,
+    })
+    .where(eq(promptsTable.id, id))
+    .returning();
+
+  // Update in Typesense
+  try {
+    await typesenseClient.collections('promptnest_prompts').documents(id.toString()).update({
+      text: updated.text,
+      type: updated.type,
+      tags: tagNames,
+    });
+  } catch (err) {
+    console.error('Typesense update error:', err);
+  }
+
+  return { message: "Prompt updated successfully", prompt: updated };
+};
+
+export const deletePrompt = async (id) => {
+  // Get the prompt first to verify it exists
+  const [prompt] = await db.select().from(promptsTable).where(eq(promptsTable.id, id));
+  
+  if (!prompt) {
+    throw new Error('Prompt not found');
+  }
+
+  // Delete from database
+  await db.delete(promptsTable).where(eq(promptsTable.id, id));
+
+  // Delete from Typesense
+  try {
+    await typesenseClient.collections('promptnest_prompts').documents(id.toString()).delete();
+  } catch (err) {
+    console.error('Typesense delete error:', err);
+  }
+
+  return { message: "Prompt deleted successfully" };
+};

@@ -47,7 +47,7 @@ const SearchController = forwardRef((props, ref) => {
 
 SearchController.displayName = "SearchController";
 
-const PromptSearch = forwardRef((props, ref) => {
+const PromptSearch = forwardRef(({ onPromptUpdated }, ref) => {
   return (
     <div className="flex flex-col gap-2 mt-4">
       <style jsx global>{`
@@ -75,7 +75,11 @@ const PromptSearch = forwardRef((props, ref) => {
           />
         </div>
         <Configure hitsPerPage={20} />
-        <Hits hitComponent={PromptHit} />
+        <Hits 
+          hitComponent={({ hit }) => (
+            <PromptHit hit={hit} onPromptUpdated={onPromptUpdated} />
+          )} 
+        />
       </InstantSearch>
     </div>
   );
