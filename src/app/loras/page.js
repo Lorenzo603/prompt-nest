@@ -13,6 +13,12 @@ export default function LorasPage() {
       loraSearchRef.current.refresh();
     }
   };
+
+  const handleLoraUpdated = () => {
+    if (loraSearchRef.current) {
+      loraSearchRef.current.refresh();
+    }
+  };
   return (
     <div className="flex">
       <Sidebar />
@@ -20,7 +26,7 @@ export default function LorasPage() {
         <div className="container mx-auto p-4">
           <h1 className="text-3xl font-bold mb-4">🧬 Loras</h1>
           <LoraForm onLoraAdded={handleLoraAdded} />
-          <LoraSearch ref={loraSearchRef} />
+          <LoraSearch ref={loraSearchRef} onLoraUpdated={handleLoraUpdated} />
         </div>
       </main>
     </div>

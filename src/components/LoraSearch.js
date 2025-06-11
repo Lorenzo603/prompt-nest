@@ -34,8 +34,8 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
 
 const searchClient = typesenseInstantsearchAdapter.searchClient;
 
-function LoraHit({ hit }) {
-  return <LoraCard lora={hit} />;
+function LoraHit({ hit, onLoraUpdated }) {
+  return <LoraCard lora={hit} onLoraUpdated={onLoraUpdated} />;
 }
 
 // Component that uses the useInstantSearch hook to access refresh method
@@ -51,7 +51,7 @@ const SearchController = forwardRef((props, ref) => {
 
 SearchController.displayName = "SearchController";
 
-const LoraSearch = forwardRef((props, ref) => {
+const LoraSearch = forwardRef(({ onLoraUpdated }, ref) => {
   return (
     <div className="flex flex-col gap-2 mt-4">
       <InstantSearch
@@ -71,7 +71,11 @@ const LoraSearch = forwardRef((props, ref) => {
           />
         </div>
         <Configure hitsPerPage={20} />
-        <Hits hitComponent={LoraHit} />
+        <Hits 
+          hitComponent={(props) => (
+            <LoraHit {...props} onLoraUpdated={onLoraUpdated} />
+          )} 
+        />
       </InstantSearch>
     </div>
   );
