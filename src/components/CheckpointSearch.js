@@ -9,7 +9,7 @@ import {
   Configure,
   useInstantSearch,
 } from "react-instantsearch";
-import CheckpointCard from "./CheckpointCard";
+import CheckpointHit from "./CheckpointHit";
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: {
@@ -34,10 +34,6 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
 
 const searchClient = typesenseInstantsearchAdapter.searchClient;
 
-function CheckpointHit({ hit, onCheckpointUpdated }) {
-  return <CheckpointCard checkpoint={hit} onCheckpointUpdated={onCheckpointUpdated} />;
-}
-
 // Component that uses the useInstantSearch hook to access refresh method
 const SearchController = forwardRef((props, ref) => {
   const { refresh } = useInstantSearch();
@@ -54,6 +50,14 @@ SearchController.displayName = "SearchController";
 const CheckpointSearch = forwardRef(({ onCheckpointUpdated }, ref) => {
   return (
     <div className="flex flex-col gap-2 mt-4">
+      <style jsx global>{`
+        .ais-Highlight-highlighted {
+          background-color: #fef08a !important;
+          padding: 1px 2px;
+          border-radius: 2px;
+          font-weight: 600;
+        }
+      `}</style>
       <InstantSearch
         indexName="promptnest_checkpoints"
         searchClient={searchClient}
