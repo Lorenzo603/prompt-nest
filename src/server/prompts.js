@@ -12,7 +12,7 @@ const typesenseClient = new Typesense.Client({
     {
       host: process.env.TYPESENSE_HOST || 'localhost',
       port: process.env.TYPESENSE_PORT ? Number(process.env.TYPESENSE_PORT) : 8108,
-    //   path: process.env.TYPESENSE_PATH || '/typesense',
+      path: process.env.TYPESENSE_PATH || '',
       protocol: process.env.TYPESENSE_PROTOCOL || 'http',
     },
   ],

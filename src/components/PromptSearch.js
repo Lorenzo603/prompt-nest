@@ -19,7 +19,9 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
         port: process.env.NEXT_PUBLIC_TYPESENSE_PORT
           ? Number(process.env.NEXT_PUBLIC_TYPESENSE_PORT)
           : 8108,
+        path: process.env.NEXT_PUBLIC_TYPESENSE_PATH || '',
         protocol: process.env.NEXT_PUBLIC_TYPESENSE_PROTOCOL || "http",
+
       },
     ],
   },
