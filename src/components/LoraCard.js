@@ -17,7 +17,7 @@ const LoraCard = ({ lora }) => {
             
             {lora.filename && (
                 <div className="text-sm text-gray-600">
-                    <span className="font-medium">File:</span> {lora.filename}
+                    <span className="font-medium">Filename:</span> {lora.filename}
                 </div>
             )}
             

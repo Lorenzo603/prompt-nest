@@ -110,6 +110,13 @@ const LoraForm = ({ onLoraAdded }) => {
                         />
                         <input
                             type="text"
+                            value={settings}
+                            onChange={(e) => setSettings(e.target.value)}
+                            placeholder="Settings (JSON string)"
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
+                        />
+                        <input
+                            type="text"
                             value={tags}
                             onChange={e => setTags(e.target.value)}
                             placeholder="Tags (comma separated)"

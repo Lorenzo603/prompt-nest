@@ -17,7 +17,7 @@ const CheckpointCard = ({ checkpoint }) => {
             
             {checkpoint.filename && (
                 <div className="text-sm text-gray-600">
-                    <span className="font-medium">File:</span> {checkpoint.filename}
+                    <span className="font-medium">Filename:</span> {checkpoint.filename}
                 </div>
             )}
             
