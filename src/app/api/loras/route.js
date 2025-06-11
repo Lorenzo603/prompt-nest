@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getLoras, addLora, updateLora } from '@/server/loras';
+import { getLoras, addLora, updateLora, deleteLora } from '@/server/loras';
 
 export async function GET() {
   const loras = await getLoras();
@@ -15,5 +15,11 @@ export async function POST(request) {
 export async function PUT(request) {
   const { id, name, description, filename, triggerWords, urls, settings, baseModel, tags } = await request.json();
   const result = await updateLora({ id, name, description, filename, triggerWords, urls, settings, baseModel, tags });
+  return NextResponse.json(result);
+}
+
+export async function DELETE(request) {
+  const { id } = await request.json();
+  const result = await deleteLora(id);
   return NextResponse.json(result);
 }

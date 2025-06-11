@@ -6,6 +6,32 @@ import LoraEditModal from "./LoraEditModal";
 
 const LoraHit = ({ hit, onLoraUpdated }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/loras`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: hit.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete lora');
+      }
+
+      setIsDeleteModalOpen(false);
+      // Trigger refresh of search results
+      onLoraUpdated && onLoraUpdated();
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Failed to delete lora. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <>
@@ -20,12 +46,20 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
             </span>
             <span className="text-xs text-gray-400">#{hit.id}</span>
           </div>
-          <button
-            onClick={() => setIsEditModalOpen(true)}
-            className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm font-medium cursor-pointer"
-          >
-            Edit
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsEditModalOpen(true)}
+              className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm font-medium cursor-pointer"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm font-medium cursor-pointer"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       
         {hit.description && (
@@ -99,6 +133,37 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
             onLoraUpdated && onLoraUpdated(updatedLora);
           }}
         />
+      )}
+      
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Delete Lora</h3>
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to delete "<strong>{hit.name}</strong>"? This action cannot be undone.
+              </p>
+              
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setIsDeleteModalOpen(false)}
+                  disabled={isDeleting}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

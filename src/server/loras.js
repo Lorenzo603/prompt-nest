@@ -116,3 +116,24 @@ export const updateLora = async ({ id, name, description, filename, triggerWords
 
   return { message: "Lora updated successfully", lora: updated };
 };
+
+export const deleteLora = async (id) => {
+  // Get the lora first to verify it exists
+  const [lora] = await db.select().from(lorasTable).where(eq(lorasTable.id, id));
+  
+  if (!lora) {
+    throw new Error('Lora not found');
+  }
+
+  // Delete from database
+  await db.delete(lorasTable).where(eq(lorasTable.id, id));
+
+  // Delete from Typesense
+  try {
+    await typesenseClient.collections('promptnest_loras').documents(id.toString()).delete();
+  } catch (err) {
+    console.error('Typesense delete error:', err);
+  }
+
+  return { message: "Lora deleted successfully" };
+};
