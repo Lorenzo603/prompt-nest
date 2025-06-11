@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { forwardRef, useImperativeHandle } from "react";
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
 import {
   InstantSearch,
   SearchBox,
   Hits,
   Configure,
+  useInstantSearch,
 } from "react-instantsearch";
 import PromptCard from "./PromptCard";
 
@@ -37,7 +38,20 @@ function PromptHit({ hit }) {
   return <PromptCard prompt={hit} />;
 }
 
-const PromptSearch = () => {
+// Component that uses the useInstantSearch hook to access refresh method
+const SearchController = forwardRef((props, ref) => {
+  const { refresh } = useInstantSearch();
+  
+  useImperativeHandle(ref, () => ({
+    refresh: refresh
+  }));
+  
+  return null; // This component doesn't render anything
+});
+
+SearchController.displayName = "SearchController";
+
+const PromptSearch = forwardRef((props, ref) => {
   return (
     <div className="flex flex-col gap-2 mt-4">
       <InstantSearch
@@ -45,6 +59,7 @@ const PromptSearch = () => {
         searchClient={searchClient}
         future={{ preserveSharedStateOnUnmount: true }}
       >
+        <SearchController ref={ref} />
         <div className="mb-4">
           <SearchBox
             translations={{
@@ -60,6 +75,8 @@ const PromptSearch = () => {
       </InstantSearch>
     </div>
   );
-};
+});
+
+PromptSearch.displayName = "PromptSearch";
 
 export default PromptSearch;

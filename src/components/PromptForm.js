@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 const DEFAULT_PROMPT_TYPE = "image"; // Default type for the prompt
 
-const PromptForm = () => {
+const PromptForm = ({ onPromptAdded }) => {
     const [promptText, setPromptText] = useState("");
     const [promptType, setPromptType] = useState(DEFAULT_PROMPT_TYPE);
     const [tags, setTags] = useState("");
@@ -29,6 +29,7 @@ const PromptForm = () => {
             setPromptType(DEFAULT_PROMPT_TYPE); // Reset type to default
             setTags("");
             setError(null);
+            onPromptAdded();
         } catch (error) {
             setError(error.message);
         }
