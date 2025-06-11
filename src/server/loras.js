@@ -24,7 +24,7 @@ export const getLoras = async () => {
   return loras;
 };
 
-export const addLora = async ({ name, description, triggerWords, tags, baseModel, filename, urls }) => {
+export const addLora = async ({ name, description, filename, triggerWords, urls, settings, baseModel, tags }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -39,27 +39,29 @@ export const addLora = async ({ name, description, triggerWords, tags, baseModel
   const urlsList = Array.isArray(urls) ? urls : [];
   
   const [inserted] = await db.insert(lorasTable).values({ 
-    name, 
-    description, 
-    triggerWords: triggerWordsList, 
+    name: name, 
+    description: description, 
+    creationDate: creationDate,
     tags: tagNames, 
-    baseModel, 
-    filename, 
+    filename: filename, 
+    triggerWords: triggerWordsList, 
     urls: urlsList, 
-    creationDate 
+    settings: settings || {},
+    baseModel: baseModel, 
   }).returning();
 
   // Index in Typesense
   try {
     await typesenseClient.collections('promptnest_loras').documents().create({
       id: inserted.id.toString(),
-      name: name,
-      description: description || '',
+      name: inserted.name,
+      description: inserted.description,
       triggerWords: triggerWordsList,
       creationDate: creationDate.toISOString(),
-      baseModel: baseModel,
-      filename: filename || '',
-      urls: urlsList,
+      baseModel: inserted.baseModel,
+      filename: inserted.filename,
+      urls: inserted.urls || [],
+      settings: inserted.settings || {},
       tags: tagNames,
     });
   } catch (err) {

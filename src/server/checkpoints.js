@@ -24,7 +24,8 @@ export const getCheckpoints = async () => {
   return checkpoints;
 };
 
-export const addCheckpoint = async ({ name, description, tags }) => {
+export const addCheckpoint = async ({ name, description, filename, 
+    urls, settings, baseModel, relatedModels, tags }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -33,8 +34,21 @@ export const addCheckpoint = async ({ name, description, tags }) => {
       await db.insert(tagsTable).values({ name: tag });
     }
   }
+
+  let urlList = Array.isArray(urls) ? urls : [];
+  let relatedModelList = Array.isArray(relatedModels) ? relatedModels : [];
   const creationDate = new Date();
-  const [inserted] = await db.insert(checkpointsTable).values({ name, description, tags: tagNames, creationDate }).returning();
+  const [inserted] = await db.insert(checkpointsTable).values({ 
+    name: name, 
+    description: description, 
+    creationDate: creationDate,
+    tags: tagNames,
+    filename: filename,
+    urls: urlList, 
+    baseModel: baseModel,
+    relatedModels: relatedModelList,
+    settings: settings || {},
+  }).returning();
 
   // Index in Typesense
   try {

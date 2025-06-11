@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-const DEFAULT_LORA_BASE_MODEL = "SD1.5"; // Default base model for the lora
+const DEFAULT_LORA_BASE_MODEL = "SDXL"; // Default base model for the lora
 
 const LoraForm = ({ onLoraAdded }) => {
     const [loraName, setLoraName] = useState("");
@@ -12,6 +12,7 @@ const LoraForm = ({ onLoraAdded }) => {
     const [baseModel, setBaseModel] = useState(DEFAULT_LORA_BASE_MODEL);
     const [filename, setFilename] = useState("");
     const [urls, setUrls] = useState("");
+    const [settings, setSettings] = useState("");
     const [error, setError] = useState(null);
 
     const handleSubmit = async (event) => {
@@ -30,22 +31,23 @@ const LoraForm = ({ onLoraAdded }) => {
                 body: JSON.stringify({ 
                     name: loraName, 
                     description: loraDescription,
-                    triggerWords: triggerWordsList,
-                    tags: tagList,
-                    baseModel: baseModel,
                     filename: filename,
-                    urls: urlsList
+                    triggerWords: triggerWordsList,
+                    urls: urlsList,
+                    settings: settings ? JSON.parse(settings) : {},
+                    baseModel: baseModel,
+                    tags: tagList,
                 }),
             });
             const result = await response.json();
             console.log(result);
             setLoraName(""); // Clear input on success
             setLoraDescription("");
-            setTriggerWords("");
-            setTags("");
-            setBaseModel(DEFAULT_LORA_BASE_MODEL); // Reset base model to default
             setFilename("");
+            setTriggerWords("");
             setUrls("");
+            setBaseModel(DEFAULT_LORA_BASE_MODEL); // Reset base model to default
+            setTags("");
             setError(null);
             onLoraAdded();
         } catch (error) {

@@ -2,23 +2,6 @@
 
 import React, { useState } from "react";
 
-const DEFAULT_PROMPT_TYPE = "image"; // Default type for the prompt
-
-
-
-// export const checkpointsTable = pgTable("checkpoints", {
-//   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-//   name: varchar({ length: 128 }).notNull(),
-//   description: text(),
-//   creationDate: timestamp().notNull(),
-//   tags: text().array().default([]),
-//   filename: text(), // e.g., 'model.safetensors'
-//   urls: text().array().default([]), 
-//   baseModel: text(), // e.g., 'gpt-3.5-turbo'
-//   relatedModels: text().array().default([]), // e.g. parent checkpoint or loras
-//   settings: text(), // JSON string or similar for model settings
-// });
-
 
 const CheckpointForm = ({ onCheckpointAdded }) => {
     const [name, setName] = useState("");
@@ -46,22 +29,26 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
-                    name: name, description: description, tags: tagList,
-                    // filename: filename, urls: urlList, baseModel: baseModel, 
-                    // relatedModels: relatedModelList,
-                    // settings: settings ? JSON.parse(settings) : {}
+                    name: name, 
+                    description: description, 
+                    filename: filename, 
+                    urls: urlList, 
+                    settings: settings ? JSON.parse(settings) : {},
+                    baseModel: baseModel, 
+                    relatedModels: relatedModelList,
+                    tags: tagList,
                  }),
             });
             const result = await response.json();
             console.log(result);
             setName(""); // Clear input on success
             setDescription("");
-            setTags("");
             setFilename("");
             setUrls("");
+            setSettings("");
             setBaseModel("");
             setRelatedModels("");
-            setSettings("");
+            setTags("");
             setError(null);
             onCheckpointAdded();
         } catch (error) {

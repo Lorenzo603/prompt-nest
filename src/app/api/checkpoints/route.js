@@ -7,7 +7,9 @@ export async function GET() {
 }
 
 export async function POST(request) {
-  const { name, description, tags } = await request.json();
-  const result = await addCheckpoint({ name, description, tags });
+  const { name, description, filename, 
+    urls, settings, baseModel, relatedModels, tags } = await request.json();
+  const result = await addCheckpoint({ name, description, filename, 
+    urls, settings, baseModel, relatedModels, tags });
   return NextResponse.json(result, { status: 201 });
 }
