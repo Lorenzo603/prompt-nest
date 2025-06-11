@@ -35,7 +35,7 @@ const PromptHit = ({ hit, onPromptUpdated }) => {
 
   return (
     <>
-      <div className="bg-white shadow-md rounded-lg p-4 border border-gray-200 hover:shadow-lg transition-shadow">
+      <div className="bg-white shadow-md rounded-lg p-4 mb-4 border border-gray-200 hover:shadow-lg transition-shadow">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded uppercase">
