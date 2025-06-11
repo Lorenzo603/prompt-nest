@@ -34,8 +34,8 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
 
 const searchClient = typesenseInstantsearchAdapter.searchClient;
 
-function CheckpointHit({ hit }) {
-  return <CheckpointCard checkpoint={hit} />;
+function CheckpointHit({ hit, onCheckpointUpdated }) {
+  return <CheckpointCard checkpoint={hit} onCheckpointUpdated={onCheckpointUpdated} />;
 }
 
 // Component that uses the useInstantSearch hook to access refresh method
@@ -51,7 +51,7 @@ const SearchController = forwardRef((props, ref) => {
 
 SearchController.displayName = "SearchController";
 
-const CheckpointSearch = forwardRef((props, ref) => {
+const CheckpointSearch = forwardRef(({ onCheckpointUpdated }, ref) => {
   return (
     <div className="flex flex-col gap-2 mt-4">
       <InstantSearch
@@ -71,7 +71,11 @@ const CheckpointSearch = forwardRef((props, ref) => {
           />
         </div>
         <Configure hitsPerPage={20} />
-        <Hits hitComponent={CheckpointHit} />
+        <Hits 
+          hitComponent={(props) => (
+            <CheckpointHit {...props} onCheckpointUpdated={onCheckpointUpdated} />
+          )} 
+        />
       </InstantSearch>
     </div>
   );

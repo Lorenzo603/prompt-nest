@@ -13,6 +13,12 @@ export default function CheckpointsPage() {
       checkpointSearchRef.current.refresh();
     }
   };
+
+  const handleCheckpointUpdated = () => {
+    if (checkpointSearchRef.current) {
+      checkpointSearchRef.current.refresh();
+    }
+  };
   return (
     <div className="flex">
       <Sidebar />
@@ -20,7 +26,7 @@ export default function CheckpointsPage() {
         <div className="container mx-auto p-4">
           <h1 className="text-3xl font-bold mb-4">Checkpoints</h1>
           <CheckpointForm onCheckpointAdded={handleCheckpointAdded} />
-          <CheckpointSearch ref={checkpointSearchRef} />
+          <CheckpointSearch ref={checkpointSearchRef} onCheckpointUpdated={handleCheckpointUpdated} />
         </div>
       </main>
     </div>
