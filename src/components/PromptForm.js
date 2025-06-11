@@ -49,6 +49,7 @@ const PromptForm = ({ onPromptAdded }) => {
                                 <option value="code">Code</option>
                                 <option value="image">Image</option>
                                 <option value="audio">Audio</option>
+                                <option value="writing">Writing</option>
                                 <option value="other">Other</option>
                             </select>
                             <textarea
