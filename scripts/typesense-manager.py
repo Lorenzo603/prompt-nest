@@ -33,6 +33,44 @@ class TypesenseManager:
         })
         print("Collection creation response:", create_response)
         return create_response
+    
+    def create_collection_checkpoints(self):
+        create_response = self.client.collections.create({
+            'name': 'checkpoints',
+            'fields': [
+                {'name': 'id', 'type': 'string'},
+                {'name': 'name', 'type': 'string'},
+                {'name': 'description', 'type': 'string'},
+                {'name': 'creationDate', 'type': 'string', 'sort': True},
+                {'name': 'filename', 'type': 'string'},
+                {'name': 'urls', 'type': 'string[]'},
+                {'name': 'settings', 'type': 'string'},
+                {'name': 'baseModel', 'type': 'string'},
+                {'name': 'relatedModels', 'type': 'string[]'},
+            ],
+            'default_sorting_field': 'creationDate',
+        })
+        print("Collection creation response:", create_response)
+        return create_response
+    
+    def create_collection_loras(self):
+        create_response = self.client.collections.create({
+            'name': 'loras',
+            'fields': [
+                {'name': 'id', 'type': 'string'},
+                {'name': 'name', 'type': 'string'},
+                {'name': 'description', 'type': 'string'},
+                {'name': 'creationDate', 'type': 'string', 'sort': True},
+                {'name': 'filename', 'type': 'string'},
+                {'name': 'triggerWords', 'type': 'string[]'},
+                {'name': 'urls', 'type': 'string[]'},
+                {'name': 'settings', 'type': 'string'},
+                {'name': 'baseModel', 'type': 'string'},
+            ],
+            'default_sorting_field': 'creationDate',
+        })
+        print("Collection creation response:", create_response)
+        return create_response
 
     def delete_collection(self, collection_name):
         delete_response = self.client.collections[collection_name].delete()
@@ -88,6 +126,9 @@ if __name__ == "__main__":
     manager = TypesenseManager()
     
     # manager.create_collection_prompts()
+    # manager.create_collection_checkpoints()
+    # manager.create_collection_loras()
+
     # manager.delete_collection()
     # manager.search_documents()
     # manager.create_api_key()
@@ -99,6 +140,6 @@ if __name__ == "__main__":
     # manager.delete_collection('checkpoints')
     # manager.delete_collection('loras')
     
-    manager.delete_all_documents('prompts')
+    # manager.delete_all_documents('prompts')
     # manager.delete_all_documents('checkpoints')
     # manager.delete_all_documents('loras')
