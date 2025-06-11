@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCheckpoints, addCheckpoint, updateCheckpoint } from '@/server/checkpoints';
+import { getCheckpoints, addCheckpoint, updateCheckpoint, deleteCheckpoint } from '@/server/checkpoints';
 
 export async function GET() {
   const checkpoint = await getCheckpoints();
@@ -19,5 +19,11 @@ export async function PUT(request) {
     urls, settings, baseModel, relatedModels, tags } = await request.json();
   const result = await updateCheckpoint({ id, name, description, filename, 
     urls, settings, baseModel, relatedModels, tags });
+  return NextResponse.json(result);
+}
+
+export async function DELETE(request) {
+  const { id } = await request.json();
+  const result = await deleteCheckpoint(id);
   return NextResponse.json(result);
 }

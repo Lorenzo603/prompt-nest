@@ -117,3 +117,24 @@ export const updateCheckpoint = async ({ id, name, description, filename,
 
   return { message: "Checkpoint updated successfully", checkpoint: updated };
 };
+
+export const deleteCheckpoint = async (id) => {
+  // Get the checkpoint first to verify it exists
+  const [checkpoint] = await db.select().from(checkpointsTable).where(eq(checkpointsTable.id, id));
+  
+  if (!checkpoint) {
+    throw new Error('Checkpoint not found');
+  }
+
+  // Delete from database
+  await db.delete(checkpointsTable).where(eq(checkpointsTable.id, id));
+
+  // Delete from Typesense
+  try {
+    await typesenseClient.collections('promptnest_checkpoints').documents(id.toString()).delete();
+  } catch (err) {
+    console.error('Typesense delete error:', err);
+  }
+
+  return { message: "Checkpoint deleted successfully" };
+};
