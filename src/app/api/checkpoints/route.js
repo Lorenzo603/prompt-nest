@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCheckpoints, addCheckpoint } from '@/server/checkpoints';
+import { getCheckpoints, addCheckpoint, updateCheckpoint } from '@/server/checkpoints';
 
 export async function GET() {
   const checkpoint = await getCheckpoints();
@@ -12,4 +12,12 @@ export async function POST(request) {
   const result = await addCheckpoint({ name, description, filename, 
     urls, settings, baseModel, relatedModels, tags });
   return NextResponse.json(result, { status: 201 });
+}
+
+export async function PUT(request) {
+  const { id, name, description, filename, 
+    urls, settings, baseModel, relatedModels, tags } = await request.json();
+  const result = await updateCheckpoint({ id, name, description, filename, 
+    urls, settings, baseModel, relatedModels, tags });
+  return NextResponse.json(result);
 }

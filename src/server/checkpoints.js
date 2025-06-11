@@ -70,3 +70,50 @@ export const addCheckpoint = async ({ name, description, filename,
 
   return { message: "Checkpoint added successfully" };
 };
+
+export const updateCheckpoint = async ({ id, name, description, filename, 
+    urls, settings, baseModel, relatedModels, tags }) => {
+  // Ensure tags exist in tagsTable and get their names
+  let tagNames = Array.isArray(tags) ? tags : [];
+  for (const tag of tagNames) {
+    const existing = await db.select().from(tagsTable).where(eq(tagsTable.name, tag));
+    if (existing.length === 0) {
+      await db.insert(tagsTable).values({ name: tag });
+    }
+  }
+
+  let urlList = Array.isArray(urls) ? urls : [];
+  let relatedModelList = Array.isArray(relatedModels) ? relatedModels : [];
+  
+  const [updated] = await db.update(checkpointsTable)
+    .set({ 
+      name: name, 
+      description: description, 
+      tags: tagNames,
+      filename: filename,
+      urls: urlList, 
+      baseModel: baseModel,
+      relatedModels: relatedModelList,
+      settings: settings || {},
+    })
+    .where(eq(checkpointsTable.id, id))
+    .returning();
+
+  // Update in Typesense
+  try {
+    await typesenseClient.collections('promptnest_checkpoints').documents(id.toString()).update({
+      name: updated.name,
+      description: updated.description,
+      tags: tagNames,
+      filename: updated.filename || '',
+      urls: updated.urls || [],
+      settings: updated.settings || '',
+      baseModel: updated.baseModel || '',
+      relatedModels: updated.relatedModels || [],
+    });
+  } catch (err) {
+    console.error('Typesense update error:', err);
+  }
+
+  return { message: "Checkpoint updated successfully", checkpoint: updated };
+};

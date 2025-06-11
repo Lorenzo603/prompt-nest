@@ -1,15 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import CheckpointEditModal from "./CheckpointEditModal";
 
-const CheckpointCard = ({ checkpoint }) => {
+const CheckpointCard = ({ checkpoint, onCheckpointUpdated }) => {
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
     return (
-        <div className="bg-white shadow-md rounded-lg p-4 mb-4 flex flex-col gap-3 border border-gray-200">
-            <div className="flex items-center gap-2 mb-2">
-                <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded uppercase">{checkpoint.baseModel}</span>
-                <span className="text-lg font-semibold text-gray-800">{checkpoint.name}</span>
-                <span className="text-xs text-gray-400">#{checkpoint.id}</span>
-            </div>
+        <>
+            <div className="bg-white shadow-md rounded-lg p-4 mb-4 flex flex-col gap-3 border border-gray-200">
+                <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded uppercase">{checkpoint.baseModel}</span>
+                        <span className="text-lg font-semibold text-gray-800">{checkpoint.name}</span>
+                        <span className="text-xs text-gray-400">#{checkpoint.id}</span>
+                    </div>
+                    <button
+                        onClick={() => setIsEditModalOpen(true)}
+                        className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm font-medium cursor-pointer"
+                    >
+                        Edit
+                    </button>
+                </div>
             
             {checkpoint.description && (
                 <p className="text-gray-600 text-sm">{checkpoint.description}</p>
@@ -64,7 +76,20 @@ const CheckpointCard = ({ checkpoint }) => {
                 </div>
                 <span className="text-xs text-gray-500">{new Date(checkpoint.creationDate).toLocaleString()}</span>
             </div>
-        </div>
+            </div>
+            
+            {/* Edit Modal */}
+            {isEditModalOpen && (
+                <CheckpointEditModal
+                    checkpoint={checkpoint}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onSave={(updatedCheckpoint) => {
+                        setIsEditModalOpen(false);
+                        onCheckpointUpdated && onCheckpointUpdated(updatedCheckpoint);
+                    }}
+                />
+            )}
+        </>
     );
 };
 
