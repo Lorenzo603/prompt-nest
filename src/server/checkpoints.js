@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { desc } from "drizzle-orm";
 import db from "../db";
-import { promptsTable, tagsTable } from "../db/schema";
+import { checkpointsTable, tagsTable } from "../db/schema";
 import { eq } from "drizzle-orm";
 import Typesense from 'typesense';
 
@@ -19,12 +19,12 @@ const typesenseClient = new Typesense.Client({
   connectionTimeoutSeconds: 2,
 });
 
-export const getPrompts = async () => {
-  const prompts = await db.select().from(promptsTable).orderBy(desc(promptsTable.creationDate));
-  return prompts;
+export const getCheckpoints = async () => {
+  const checkpoints = await db.select().from(checkpointsTable).orderBy(desc(checkpointsTable.creationDate));
+  return checkpoints;
 };
 
-export const addPrompt = async ({ text, type, tags }) => {
+export const addCheckpoint = async ({ name, description, tags }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -34,20 +34,25 @@ export const addPrompt = async ({ text, type, tags }) => {
     }
   }
   const creationDate = new Date();
-  const [inserted] = await db.insert(promptsTable).values({ text, type, tags: tagNames, creationDate }).returning();
+  const [inserted] = await db.insert(checkpointsTable).values({ name, description, tags: tagNames, creationDate }).returning();
 
   // Index in Typesense
   try {
-    await typesenseClient.collections('promptnest_prompts').documents().create({
+    await typesenseClient.collections('promptnest_checkpoints').documents().create({
       id: inserted.id.toString(),
-      text: text,
+      name: inserted.name,
+      description: inserted.description,
       creationDate: creationDate.toISOString(),
-      type: type,
       tags: tagNames,
+      filename: inserted.filename || '',
+      urls: inserted.urls || [],
+      settings: inserted.settings || '',
+      baseModel: inserted.baseModel || '',
+      relatedModels: inserted.relatedModels || [],
     });
   } catch (err) {
     console.error('Typesense indexing error:', err);
   }
 
-  return { message: "Prompt added successfully" };
+  return { message: "Checkpoint added successfully" };
 };

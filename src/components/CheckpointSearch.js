@@ -9,7 +9,7 @@ import {
   Configure,
   useInstantSearch,
 } from "react-instantsearch";
-import PromptCard from "./PromptCard";
+import CheckpointCard from "./CheckpointCard";
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: {
@@ -27,15 +27,15 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
     ],
   },
   additionalSearchParameters: {
-    query_by: "text,tags,type",
+    query_by: "name,tags,description",
     sort_by: "creationDate:desc",
   },
 });
 
 const searchClient = typesenseInstantsearchAdapter.searchClient;
 
-function PromptHit({ hit }) {
-  return <PromptCard prompt={hit} />;
+function CheckpointHit({ hit }) {
+  return <CheckpointCard checkpoint={hit} />;
 }
 
 // Component that uses the useInstantSearch hook to access refresh method
@@ -51,11 +51,11 @@ const SearchController = forwardRef((props, ref) => {
 
 SearchController.displayName = "SearchController";
 
-const PromptSearch = forwardRef((props, ref) => {
+const CheckpointSearch = forwardRef((props, ref) => {
   return (
     <div className="flex flex-col gap-2 mt-4">
       <InstantSearch
-        indexName="promptnest_prompts"
+        indexName="promptnest_checkpoints"
         searchClient={searchClient}
         future={{ preserveSharedStateOnUnmount: true }}
       >
@@ -63,7 +63,7 @@ const PromptSearch = forwardRef((props, ref) => {
         <div className="mb-4">
           <SearchBox
             translations={{
-              placeholder: "Search prompts...",
+              placeholder: "Search checkpoints/models...",
             }}
             classNames={{
               input: "px-3 py-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50",
@@ -71,12 +71,12 @@ const PromptSearch = forwardRef((props, ref) => {
           />
         </div>
         <Configure hitsPerPage={20} />
-        <Hits hitComponent={PromptHit} />
+        <Hits hitComponent={CheckpointHit} />
       </InstantSearch>
     </div>
   );
 });
 
-PromptSearch.displayName = "PromptSearch";
+CheckpointSearch.displayName = "CheckpointSearch";
 
-export default PromptSearch;
+export default CheckpointSearch;

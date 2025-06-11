@@ -21,7 +21,7 @@ class TypesenseManager:
 
     def create_collection_prompts(self):
         create_response = self.client.collections.create({
-            'name': 'prompts',
+            'name': 'promptnest_prompts',
             'fields': [
                 {'name': 'id', 'type': 'string'},
                 {'name': 'text', 'type': 'string'},
@@ -36,7 +36,7 @@ class TypesenseManager:
     
     def create_collection_checkpoints(self):
         create_response = self.client.collections.create({
-            'name': 'checkpoints',
+            'name': 'promptnest_checkpoints',
             'fields': [
                 {'name': 'id', 'type': 'string'},
                 {'name': 'name', 'type': 'string'},
@@ -47,6 +47,7 @@ class TypesenseManager:
                 {'name': 'settings', 'type': 'string'},
                 {'name': 'baseModel', 'type': 'string'},
                 {'name': 'relatedModels', 'type': 'string[]'},
+                {'name': 'tags', 'type': 'string[]'},
             ],
             'default_sorting_field': 'creationDate',
         })
@@ -55,7 +56,7 @@ class TypesenseManager:
     
     def create_collection_loras(self):
         create_response = self.client.collections.create({
-            'name': 'loras',
+            'name': 'promptnest_loras',
             'fields': [
                 {'name': 'id', 'type': 'string'},
                 {'name': 'name', 'type': 'string'},
@@ -66,6 +67,7 @@ class TypesenseManager:
                 {'name': 'urls', 'type': 'string[]'},
                 {'name': 'settings', 'type': 'string'},
                 {'name': 'baseModel', 'type': 'string'},
+                {'name': 'tags', 'type': 'string[]'},
             ],
             'default_sorting_field': 'creationDate',
         })
@@ -94,9 +96,9 @@ class TypesenseManager:
 
     def create_api_key(self):
         create_key_response = self.client.keys.create({
-            'description': 'Search-only prompts key.',
+            'description': 'Search-only PromptNest key.',
             'actions': ['documents:search'],
-            'collections': ['prompts'],
+            'collections': ['promptnest_.*'],
         })
         print("API Key creation response:", create_key_response)
         return create_key_response
@@ -111,7 +113,7 @@ class TypesenseManager:
         print("API Key details:", json.dumps(key, indent=2))
         return key
 
-    def delete_api_key(self, key_id=1):
+    def delete_api_key(self, key_id):
         deleted_key_response = self.client.keys[key_id].delete()
         print("API Key deletion response:", deleted_key_response)
         return deleted_key_response
@@ -134,11 +136,11 @@ if __name__ == "__main__":
     # manager.create_api_key()
     # manager.list_api_keys()
     # manager.retrieve_api_key()
-    # manager.delete_api_key()
+    # manager.delete_api_key(2)
     
-    # manager.delete_collection('prompts')
-    # manager.delete_collection('checkpoints')
-    # manager.delete_collection('loras')
+    # manager.delete_collection('promptnest_prompts')
+    # manager.delete_collection('promptnest_checkpoints')
+    # manager.delete_collection('promptnest_loras')
     
     # manager.delete_all_documents('prompts')
     # manager.delete_all_documents('checkpoints')
