@@ -70,3 +70,49 @@ export const addLora = async ({ name, description, filename, triggerWords, urls,
 
   return { message: "Lora added successfully" };
 };
+
+export const updateLora = async ({ id, name, description, filename, triggerWords, urls, settings, baseModel, tags }) => {
+  // Ensure tags exist in tagsTable and get their names
+  let tagNames = Array.isArray(tags) ? tags : [];
+  for (const tag of tagNames) {
+    const existing = await db.select().from(tagsTable).where(eq(tagsTable.name, tag));
+    if (existing.length === 0) {
+      await db.insert(tagsTable).values({ name: tag });
+    }
+  }
+
+  const triggerWordsList = Array.isArray(triggerWords) ? triggerWords : [];
+  const urlsList = Array.isArray(urls) ? urls : [];
+  
+  const [updated] = await db.update(lorasTable)
+    .set({ 
+      name: name, 
+      description: description, 
+      tags: tagNames,
+      filename: filename,
+      triggerWords: triggerWordsList,
+      urls: urlsList, 
+      baseModel: baseModel,
+      settings: settings || {},
+    })
+    .where(eq(lorasTable.id, id))
+    .returning();
+
+  // Update in Typesense
+  try {
+    await typesenseClient.collections('promptnest_loras').documents(id.toString()).update({
+      name: updated.name,
+      description: updated.description,
+      triggerWords: triggerWordsList,
+      baseModel: updated.baseModel,
+      filename: updated.filename || '',
+      urls: updated.urls || [],
+      settings: updated.settings || {},
+      tags: tagNames,
+    });
+  } catch (err) {
+    console.error('Typesense update error:', err);
+  }
+
+  return { message: "Lora updated successfully", lora: updated };
+};

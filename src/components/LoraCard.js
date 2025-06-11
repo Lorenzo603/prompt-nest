@@ -1,15 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import LoraEditModal from "./LoraEditModal";
 
-const LoraCard = ({ lora }) => {
+const LoraCard = ({ lora, onLoraUpdated }) => {
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
     return (
-        <div className="bg-white shadow-md rounded-lg p-4 mb-4 flex flex-col gap-3 border border-gray-200">
-            <div className="flex items-center gap-2 mb-2">
-                <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded uppercase">{lora.baseModel}</span>
-                <span className="text-lg font-semibold text-gray-800">{lora.name}</span>
-                <span className="text-xs text-gray-400">#{lora.id}</span>
-            </div>
+        <>
+            <div className="bg-white shadow-md rounded-lg p-4 mb-4 flex flex-col gap-3 border border-gray-200">
+                <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                        <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded uppercase">{lora.baseModel}</span>
+                        <span className="text-lg font-semibold text-gray-800">{lora.name}</span>
+                        <span className="text-xs text-gray-400">#{lora.id}</span>
+                    </div>
+                    <button
+                        onClick={() => setIsEditModalOpen(true)}
+                        className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm font-medium cursor-pointer"
+                    >
+                        Edit
+                    </button>
+                </div>
             
             {lora.description && (
                 <p className="text-gray-600 text-sm">{lora.description}</p>
@@ -64,7 +76,20 @@ const LoraCard = ({ lora }) => {
                 </div>
                 <span className="text-xs text-gray-500">{new Date(lora.creationDate).toLocaleString()}</span>
             </div>
-        </div>
+            </div>
+            
+            {/* Edit Modal */}
+            {isEditModalOpen && (
+                <LoraEditModal
+                    lora={lora}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onSave={(updatedLora) => {
+                        setIsEditModalOpen(false);
+                        onLoraUpdated && onLoraUpdated(updatedLora);
+                    }}
+                />
+            )}
+        </>
     );
 };
 
