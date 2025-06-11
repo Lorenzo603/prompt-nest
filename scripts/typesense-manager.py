@@ -142,6 +142,6 @@ if __name__ == "__main__":
     # manager.delete_collection('promptnest_checkpoints')
     # manager.delete_collection('promptnest_loras')
     
-    # manager.delete_all_documents('prompts')
-    # manager.delete_all_documents('checkpoints')
-    # manager.delete_all_documents('loras')
+    # manager.delete_all_documents('promptnest_prompts')
+    # manager.delete_all_documents('promptnest_checkpoints')
+    # manager.delete_all_documents('promptnest_loras')
