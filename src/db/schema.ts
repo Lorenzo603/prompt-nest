@@ -12,3 +12,30 @@ export const tagsTable = pgTable("tags", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: varchar({ length: 64 }).notNull().unique(),
 });
+
+export const checkpointsTable = pgTable("checkpoints", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 128 }).notNull(),
+  description: text(),
+  creationDate: timestamp().notNull(),
+  tags: text().array().default([]),
+  filename: text(), // e.g., 'model.safetensors'
+  urls: text().array().default([]), 
+  baseModel: text(), // e.g., 'gpt-3.5-turbo'
+  relatedModels: text().array().default([]), // e.g. parent checkpoint or loras
+  settings: text(), // JSON string or similar for model settings
+});
+
+export const lorasTable = pgTable("loras", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 128 }).notNull(),
+  description: text(),
+  creationDate: timestamp().notNull(),
+  tags: text().array().default([]),
+  filename: text(), // e.g., 'lora.safetensors'
+  triggerWords: text().array().default([]), // e.g., ['cat', 'dog']
+  urls: text().array().default([]),
+  settings: text(), // JSON string or similar for Lora settings
+  baseModel: text(), // parent checkpoint
+});
+
