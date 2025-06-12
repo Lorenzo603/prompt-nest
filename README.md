@@ -29,7 +29,7 @@ scp prompt-nest.tar user@your-vps-ip:/path/on/vps/
 on VPS:
 ```bash
 docker load -i prompt-nest.tar
-docker run -d -p 5000:4000 --env-file .env.local prompt-nest
+docker run -d -p 5000:4000 prompt-nest
 ```
 
 Inspect container from inside :
