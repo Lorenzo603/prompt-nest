@@ -31,3 +31,8 @@ on VPS:
 docker load -i prompt-nest.tar
 docker run -d -p 5000:4000 --env-file .env.local prompt-nest
 ```
+
+Inspect container from inside :
+```bash
+docker exec -it <ID> sh
+```
