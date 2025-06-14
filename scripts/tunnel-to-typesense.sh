@@ -6,4 +6,4 @@ echo "Scripts Dir:" $SCRIPTS_DIR
 # Load configuration
 source $SCRIPTS_DIR/scripts-config.txt
 
-ssh $REMOTE_SERVER -L 5432:localhost:5432
+ssh $REMOTE_SERVER -L 8108:localhost:8108
