@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import TagInput from "./TagInput";
 
 const DEFAULT_LORA_BASE_MODEL = "SDXL"; // Default base model for the lora
 
@@ -8,7 +9,7 @@ const LoraForm = ({ onLoraAdded }) => {
     const [loraName, setLoraName] = useState("");
     const [loraDescription, setLoraDescription] = useState("");
     const [triggerWords, setTriggerWords] = useState("");
-    const [tags, setTags] = useState("");
+    const [tags, setTags] = useState([]);
     const [baseModel, setBaseModel] = useState(DEFAULT_LORA_BASE_MODEL);
     const [filename, setFilename] = useState("");
     const [urls, setUrls] = useState("");
@@ -24,7 +25,7 @@ const LoraForm = ({ onLoraAdded }) => {
             return;
         }
         try {
-            const tagList = tags.split(",").map(t => t.trim()).filter(Boolean);
+            const tagList = tags; // tags is already an array
             const triggerWordsList = triggerWords.split(",").map(t => t.trim()).filter(Boolean);
             const urlsList = urls.split(",").map(t => t.trim()).filter(Boolean);
             const response = await fetch(`/api/loras`, {
@@ -50,7 +51,7 @@ const LoraForm = ({ onLoraAdded }) => {
             setTriggerWords("");
             setUrls("");
             setBaseModel(DEFAULT_LORA_BASE_MODEL); // Reset base model to default
-            setTags("");
+            setTags([]);
             setVersion("");
             setUploadDate("");
             setError(null);
@@ -136,12 +137,11 @@ const LoraForm = ({ onLoraAdded }) => {
                             placeholder="Settings"
                             className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
                         />
-                        <input
-                            type="text"
+                        <TagInput
                             value={tags}
-                            onChange={e => setTags(e.target.value)}
-                            placeholder="Tags (comma separated)"
-                            className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
+                            onChange={setTags}
+                            placeholder="Add tags..."
+                            className="w-full"
                         />
                         
                     </div>
