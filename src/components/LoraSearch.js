@@ -1,16 +1,16 @@
 "use client";
 
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+import React, { forwardRef, useImperativeHandle } from "react";
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
 import {
   InstantSearch,
-  SearchBox,
   Hits,
   Configure,
   useInstantSearch,
 } from "react-instantsearch";
 import LoraHit from "./LoraHit";
 import TagFilter from "./TagFilter";
+import CustomSearchBox from "./CustomSearchBox";
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: {
@@ -66,11 +66,9 @@ const LoraSearch = forwardRef(({ onLoraUpdated }, ref) => {
       >
         <SearchController ref={ref} />
         <div className="mb-4 bg-gray-400 p-4 rounded shadow">
-          <SearchBox
+          <CustomSearchBox 
             placeholder="Search LoRAs..."
-            classNames={{
-              input: "px-3 py-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50",
-            }}
+            colorTheme="purple"
           />
           <TagFilter 
             colorTheme="purple"
