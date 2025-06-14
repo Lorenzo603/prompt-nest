@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import TagInput from "./TagInput";
 
 const LoraEditModal = ({ lora, onClose, onSave }) => {
     const [name, setName] = useState(lora.name || "");
     const [description, setDescription] = useState(lora.description || "");
-    const [tags, setTags] = useState(lora.tags ? lora.tags.join(", ") : "");
+    const [tags, setTags] = useState(lora.tags || []);
     const [filename, setFilename] = useState(lora.filename || "");
     const [urls, setUrls] = useState(lora.urls ? lora.urls.join(", ") : "");
     const [baseModel, setBaseModel] = useState(lora.baseModel || "");
@@ -26,7 +27,7 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
         setError(null);
         
         try {
-            const tagList = tags.split(",").map(t => t.trim()).filter(Boolean);
+            const tagList = tags; // tags is already an array
             const urlList = urls.split(",").map(u => u.trim()).filter(Boolean);
             const triggerWordList = triggerWords.split(",").map(t => t.trim()).filter(Boolean);
     
@@ -155,12 +156,11 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                             className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50 font-mono text-sm"
                         />
                         
-                        <input
-                            type="text"
+                        <TagInput
                             value={tags}
-                            onChange={(e) => setTags(e.target.value)}
-                            placeholder="Tags (comma separated)"
-                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
+                            onChange={setTags}
+                            placeholder="Add tags..."
+                            className="w-full"
                         />
                       
                     </div>
