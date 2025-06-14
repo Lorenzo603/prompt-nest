@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import TagInput from "./TagInput";
 
 const PromptEditModal = ({ prompt, onClose, onSave }) => {
     const [text, setText] = useState(prompt.text || "");
     const [type, setType] = useState(prompt.type || "image");
-    const [tags, setTags] = useState(prompt.tags ? prompt.tags.join(", ") : "");
+    const [tags, setTags] = useState(prompt.tags || []);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -19,7 +20,7 @@ const PromptEditModal = ({ prompt, onClose, onSave }) => {
         setError(null);
         
         try {
-            const tagList = tags.split(",").map(t => t.trim()).filter(Boolean);
+            const tagList = tags; // tags is already an array
             
             const response = await fetch(`/api/prompts`, {
                 method: "PUT",
@@ -84,14 +85,14 @@ const PromptEditModal = ({ prompt, onClose, onSave }) => {
                         
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Tags (comma separated)
+                                Tags
                             </label>
-                            <input
-                                type="text"
+                            <TagInput
                                 value={tags}
-                                onChange={(e) => setTags(e.target.value)}
-                                placeholder="e.g. portrait, realistic, art"
-                                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
+                                onChange={setTags}
+                                placeholder="Add tags..."
+                                className="w-full"
+                                ringColor="blue"
                             />
                         </div>
                         

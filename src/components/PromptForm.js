@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
+import TagInput from "./TagInput";
 
 const DEFAULT_PROMPT_TYPE = "image"; // Default type for the prompt
 
 const PromptForm = ({ onPromptAdded }) => {
     const [promptText, setPromptText] = useState("");
     const [promptType, setPromptType] = useState(DEFAULT_PROMPT_TYPE);
-    const [tags, setTags] = useState("");
+    const [tags, setTags] = useState([]);
     const [error, setError] = useState(null);
 
     const handleSubmit = async (event) => {
@@ -17,7 +18,7 @@ const PromptForm = ({ onPromptAdded }) => {
             return;
         }
         try {
-            const tagList = tags.split(",").map(t => t.trim()).filter(Boolean);
+            const tagList = tags; // tags is already an array
             const response = await fetch("/api/prompts", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -27,7 +28,7 @@ const PromptForm = ({ onPromptAdded }) => {
             console.log(result);
             setPromptText(""); // Clear input on success
             setPromptType(DEFAULT_PROMPT_TYPE); // Reset type to default
-            setTags("");
+            setTags([]);
             setError(null);
             onPromptAdded();
         } catch (error) {
@@ -60,12 +61,12 @@ const PromptForm = ({ onPromptAdded }) => {
                                 rows={3}
                             />
                         </div>
-                        <input
-                            type="text"
+                        <TagInput
                             value={tags}
-                            onChange={e => setTags(e.target.value)}
-                            placeholder="Tags (comma separated)"
-                            className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
+                            onChange={setTags}
+                            placeholder="Add tags..."
+                            className="w-full"
+                            ringColor="blue"
                         />
                     </div>
                     <div className="flex">
