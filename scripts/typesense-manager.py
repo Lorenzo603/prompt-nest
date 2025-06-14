@@ -132,6 +132,65 @@ class TypesenseManager:
         print("API Key deletion response:", deleted_key_response)
         return deleted_key_response
 
+    def nullify_upload_dates(self, collection_name):
+        """
+        Retrieve all documents in a collection and set their uploadDate field to null
+        """
+        print(f"Starting to nullify uploadDate for all documents in collection '{collection_name}'...")
+        
+        page = 1
+        per_page = 100  # Process in batches of 100
+        total_updated = 0
+        
+        while True:
+            # Search for all documents in the collection
+            search_parameters = {
+                'q': '*',
+                'query_by': '*',
+                'page': page,
+                'per_page': per_page
+            }
+            
+            try:
+                search_response = self.client.collections[collection_name].documents.search(search_parameters)
+                hits = search_response.get('hits', [])
+                
+                if not hits:
+                    print(f"No more documents found. Processed {total_updated} documents total.")
+                    break
+                
+                print(f"Processing page {page}, found {len(hits)} documents...")
+                
+                # Update each document to set uploadDate to null
+                for hit in hits:
+                    document = hit['document']
+                    doc_id = document['id']
+                    
+                    try:
+                        # Create update payload with uploadDate set to null
+                        update_data = dict(document)  # Copy existing document
+                        update_data['uploadDate'] = None
+                        
+                        # Update the document
+                        update_response = self.client.collections[collection_name].documents[doc_id].update(update_data)
+                        total_updated += 1
+                        
+                        if total_updated % 10 == 0:  # Progress indicator every 10 updates
+                            print(f"Updated {total_updated} documents...")
+                            
+                    except Exception as e:
+                        print(f"Error updating document {doc_id}: {e}")
+                        continue
+                
+                page += 1
+                
+            except Exception as e:
+                print(f"Error searching collection on page {page}: {e}")
+                break
+        
+        print(f"Completed! Successfully updated {total_updated} documents in collection '{collection_name}'")
+        return total_updated
+
     def delete_all_documents(self, collection_name):
         result = self.client.collections[collection_name].documents.delete({"filter_by": "id:*"})
         print(f"All documents deleted from collection '{collection_name}':", result)
@@ -147,10 +206,17 @@ if __name__ == "__main__":
     
     # manager.update_collection('promptnest_checkpoints')
     # manager.update_collection('promptnest_loras')
+    
+    # manager.nullify_upload_dates('promptnest_loras')
 
     # manager.delete_collection()
     # manager.search_documents('promptnest_checkpoints')
-    manager.search_documents('promptnest_loras')
+    # manager.search_documents('promptnest_loras')
+    
+    
+    # Nullify uploadDate for all documents in collections
+    # manager.nullify_upload_dates('promptnest_checkpoints')
+    # manager.nullify_upload_dates('promptnest_loras')
     
     # manager.create_api_key()
     # manager.list_api_keys()
