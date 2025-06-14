@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 
-const TagInput = ({ value = [], onChange, placeholder = "Add tags...", className = "" }) => {
+const TagInput = ({ value = [], onChange, placeholder = "Add tags...", className = "", ringColor = "purple" }) => {
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -100,9 +100,34 @@ const TagInput = ({ value = [], onChange, placeholder = "Add tags...", className
     }, 200);
   };
 
+  const getRingColorClass = () => {
+    switch (ringColor) {
+      case "green":
+        return "focus-within:ring-green-400";
+      case "blue":
+        return "focus-within:ring-blue-400";
+      case "purple":
+      default:
+        return "focus-within:ring-purple-400";
+    }
+  };
+
+  const getHighlightColorClass = (selected) => {
+    const baseClass = selected ? "text-white" : "text-gray-800";
+    switch (ringColor) {
+      case "green":
+        return selected ? "bg-green-100 text-green-800" : "hover:bg-gray-100 text-gray-800";
+      case "blue":
+        return selected ? "bg-blue-100 text-blue-800" : "hover:bg-gray-100 text-gray-800";
+      case "purple":
+      default:
+        return selected ? "bg-purple-100 text-purple-800" : "hover:bg-gray-100 text-gray-800";
+    }
+  };
+
   return (
     <div className={`relative ${className}`}>
-      <div className="min-h-[42px] px-3 py-2 border border-gray-300 rounded focus-within:outline-none focus-within:ring-2 focus-within:ring-purple-400 text-gray-800 bg-gray-50 flex flex-wrap gap-1 items-center">
+      <div className={`min-h-[42px] px-3 py-2 border border-gray-300 rounded focus-within:outline-none focus-within:ring-2 ${getRingColorClass()} text-gray-800 bg-gray-50 flex flex-wrap gap-1 items-center`}>
         {/* Display selected tags */}
         {value.map((tag, index) => (
           <span key={index} className="inline-flex items-center bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">
@@ -141,11 +166,7 @@ const TagInput = ({ value = [], onChange, placeholder = "Add tags...", className
             <div
               key={suggestion.id}
               onClick={() => handleSuggestionClick(suggestion)}
-              className={`px-3 py-2 cursor-pointer text-sm ${
-                index === selectedIndex
-                  ? 'bg-purple-100 text-purple-800'
-                  : 'hover:bg-gray-100 text-gray-800'
-              }`}
+              className={`px-3 py-2 cursor-pointer text-sm ${getHighlightColorClass(index === selectedIndex)}`}
             >
               {suggestion.name}
             </div>
@@ -153,11 +174,7 @@ const TagInput = ({ value = [], onChange, placeholder = "Add tags...", className
           {inputValue.trim() && !suggestions.some(s => s.name.toLowerCase() === inputValue.toLowerCase()) && (
             <div
               onClick={() => addTag(inputValue.trim())}
-              className={`px-3 py-2 cursor-pointer text-sm border-t border-gray-200 font-medium ${
-                selectedIndex === suggestions.length
-                  ? 'bg-purple-100 text-purple-800'
-                  : 'hover:bg-gray-300 text-gray-800'
-              }`}
+              className={`px-3 py-2 cursor-pointer text-sm border-t border-gray-200 font-medium ${getHighlightColorClass(selectedIndex === suggestions.length)}`}
             >
               + Create "{inputValue.trim()}"
             </div>

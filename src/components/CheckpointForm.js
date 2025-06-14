@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
+import TagInput from "./TagInput";
 
 
 const CheckpointForm = ({ onCheckpointAdded }) => {
     const [name, setName] = useState("");
     const [version, setVersion] = useState("");
     const [description, setDescription] = useState("");
-    const [tags, setTags] = useState("");
+    const [tags, setTags] = useState([]);
     const [filename, setFilename] = useState("");
     const [urls, setUrls] = useState("");
     const [baseModel, setBaseModel] = useState("");
@@ -24,7 +25,7 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
             return;
         }
         try {
-            const tagList = tags.split(",").map(t => t.trim()).filter(Boolean);
+            const tagList = tags; // tags is already an array
             const urlList = urls.split(",").map(u => u.trim()).filter(Boolean);
             const relatedModelList = relatedModels.split(",").map(r => r.trim()).filter(Boolean);
             const response = await fetch("/api/checkpoints", {
@@ -52,7 +53,7 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
             setSettings("");
             setBaseModel("");
             setRelatedModels("");
-            setTags("");
+            setTags([]);
             setVersion("");
             setUploadDate("");
             setError(null);
@@ -136,12 +137,12 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
                             className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
                         />
                         
-                        <input
-                            type="text"
+                        <TagInput
                             value={tags}
-                            onChange={e => setTags(e.target.value)}
-                            placeholder="Tags (comma separated)"
-                            className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
+                            onChange={setTags}
+                            placeholder="Add tags..."
+                            className="w-full"
+                            ringColor="green"
                         />
                     </div>
                     <div className="flex">

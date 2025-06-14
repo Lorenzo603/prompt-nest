@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import TagInput from "./TagInput";
 
 const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
     const [name, setName] = useState(checkpoint.name || "");
     const [description, setDescription] = useState(checkpoint.description || "");
-    const [tags, setTags] = useState(checkpoint.tags ? checkpoint.tags.join(", ") : "");
+    const [tags, setTags] = useState(checkpoint.tags || []);
     const [filename, setFilename] = useState(checkpoint.filename || "");
     const [urls, setUrls] = useState(checkpoint.urls ? checkpoint.urls.join(", ") : "");
     const [baseModel, setBaseModel] = useState(checkpoint.baseModel || "");
@@ -26,7 +27,7 @@ const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
         setError(null);
         
         try {
-            const tagList = tags.split(",").map(t => t.trim()).filter(Boolean);
+            const tagList = tags; // tags is already an array
             const urlList = urls.split(",").map(u => u.trim()).filter(Boolean);
             const relatedModelList = relatedModels.split(",").map(r => r.trim()).filter(Boolean);
             
@@ -147,7 +148,7 @@ const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
                                 className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-400 text-gray-800 bg-gray-50"
                             />
                         </div>
-                        
+
                         <textarea
                             value={settings}
                             onChange={(e) => setSettings(e.target.value)}
@@ -156,12 +157,12 @@ const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
                             className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-400 text-gray-800 bg-gray-50 font-mono text-sm"
                         />
                         
-                        <input
-                            type="text"
+                        <TagInput
                             value={tags}
-                            onChange={(e) => setTags(e.target.value)}
-                            placeholder="Tags (comma separated)"
-                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-400 text-gray-800 bg-gray-50"
+                            onChange={setTags}
+                            placeholder="Add tags..."
+                            className="w-full"
+                            ringColor="green"
                         />
                     </div>
                     
