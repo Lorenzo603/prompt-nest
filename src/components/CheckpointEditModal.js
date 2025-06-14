@@ -13,7 +13,7 @@ const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
     const [relatedModels, setRelatedModels] = useState(checkpoint.relatedModels ? checkpoint.relatedModels.join(", ") : "");
     const [settings, setSettings] = useState(checkpoint.settings || "");
     const [version, setVersion] = useState(checkpoint.version || "");
-    const [uploadDate, setUploadDate] = useState(checkpoint.uploadDate || "");
+    const [publishedDate, setPublishedDate] = useState(checkpoint.publishedDate || "");
     const [hash, setHash] = useState(checkpoint.hash || "");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +46,7 @@ const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
                     relatedModels: relatedModelList,
                     tags: tagList,
                     version: version,
-                    uploadDate: uploadDate,
+                    publishedDate: publishedDate,
                     hash: hash,
                 }),
             });
@@ -68,7 +68,7 @@ const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
                 relatedModels: relatedModelList,
                 tags: tagList,
                 version,
-                uploadDate,
+                publishedDate,
             });
         } catch (error) {
             console.error('Update error:', error);
@@ -144,9 +144,9 @@ const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
                             />
                                 <input
                                 type="text"
-                                value={uploadDate}
-                                onChange={(e) => setUploadDate(e.target.value)}
-                                placeholder="Upload Date (YYYY-MM-DD)"
+                                value={publishedDate}
+                                onChange={(e) => setPublishedDate(e.target.value)}
+                                placeholder="Published Date (YYYY-MM-DD)"
                                 className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-400 text-gray-800 bg-gray-50"
                             />
                         </div>

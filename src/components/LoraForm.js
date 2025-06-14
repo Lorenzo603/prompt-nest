@@ -15,7 +15,7 @@ const LoraForm = ({ onLoraAdded }) => {
     const [urls, setUrls] = useState("");
     const [settings, setSettings] = useState("");
     const [version, setVersion] = useState("");
-    const [uploadDate, setUploadDate] = useState("");
+    const [publishedDate, setPublishedDate] = useState("");
     const [hash, setHash] = useState("");
     const [error, setError] = useState(null);
 
@@ -42,7 +42,7 @@ const LoraForm = ({ onLoraAdded }) => {
                     baseModel: baseModel, 
                     tags: tagList,
                     version: version,
-                    uploadDate: uploadDate,
+                    publishedDate: publishedDate,
                     hash: hash,
                 }),
             });
@@ -56,7 +56,7 @@ const LoraForm = ({ onLoraAdded }) => {
             setBaseModel(DEFAULT_LORA_BASE_MODEL); // Reset base model to default
             setTags([]);
             setVersion("");
-            setUploadDate("");
+            setPublishedDate("");
             setHash("");
             setError(null);
             onLoraAdded();
@@ -121,9 +121,9 @@ const LoraForm = ({ onLoraAdded }) => {
                             />
                             <input
                                 type="text"
-                                value={uploadDate}
-                                onChange={(e) => setUploadDate(e.target.value)}
-                                placeholder="Upload Date (YYYY-MM-DD)"
+                                value={publishedDate}
+                                onChange={(e) => setPublishedDate(e.target.value)}
+                                placeholder="Published Date (YYYY-MM-DD)"
                                 className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
                             />
                         </div>

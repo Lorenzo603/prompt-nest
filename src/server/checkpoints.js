@@ -25,7 +25,7 @@ export const getCheckpoints = async () => {
 };
 
 export const addCheckpoint = async ({ name, description, filename, 
-    urls, settings, baseModel, relatedModels, tags, version, uploadDate, hash }) => {
+    urls, settings, baseModel, relatedModels, tags, version, publishedDate, hash }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -49,7 +49,7 @@ export const addCheckpoint = async ({ name, description, filename,
     relatedModels: relatedModelList,
     settings: settings,
     version: version,
-    uploadDate: uploadDate ? new Date(uploadDate) : null,
+    publishedDate: publishedDate ? new Date(publishedDate) : null,
     hash: hash,
   }).returning();
 
@@ -67,7 +67,7 @@ export const addCheckpoint = async ({ name, description, filename,
       baseModel: inserted.baseModel || '',
       relatedModels: inserted.relatedModels || [],
       version: inserted.version || '',
-      uploadDate: inserted.uploadDate || '',
+      publishedDate: inserted.publishedDate || '',
       hash: inserted.hash || '',
     });
   } catch (err) {
@@ -78,7 +78,7 @@ export const addCheckpoint = async ({ name, description, filename,
 };
 
 export const updateCheckpoint = async ({ id, name, description, filename, 
-    urls, settings, baseModel, relatedModels, tags, version, uploadDate, hash }) => {
+    urls, settings, baseModel, relatedModels, tags, version, publishedDate, hash }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -102,7 +102,7 @@ export const updateCheckpoint = async ({ id, name, description, filename,
       relatedModels: relatedModelList,
       settings: settings,
       version: version,
-      uploadDate: uploadDate ? new Date(uploadDate) : null,
+      publishedDate: publishedDate ? new Date(publishedDate) : null,
       hash: hash,
     })
     .where(eq(checkpointsTable.id, id))
@@ -120,7 +120,7 @@ export const updateCheckpoint = async ({ id, name, description, filename,
       baseModel: updated.baseModel || '',
       relatedModels: updated.relatedModels || [],
       version: updated.version || '',
-      uploadDate: updated.uploadDate ? updated.uploadDate.toISOString() : '',
+      publishedDate: updated.publishedDate ? updated.publishedDate.toISOString() : '',
       hash: updated.hash || '',
     });
   } catch (err) {

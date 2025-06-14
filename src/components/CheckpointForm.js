@@ -14,7 +14,7 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
     const [baseModel, setBaseModel] = useState("");
     const [relatedModels, setRelatedModels] = useState("");
     const [settings, setSettings] = useState("");
-    const [uploadDate, setUploadDate] = useState("");
+    const [publishedDate, setPublishedDate] = useState("");
     const [hash, setHash] = useState("");
 
     const [error, setError] = useState(null);
@@ -42,7 +42,7 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
                     relatedModels: relatedModelList,
                     tags: tagList,
                     version: version,
-                    uploadDate: uploadDate,
+                    publishedDate: publishedDate,
                     hash: hash,
                  }),
             });
@@ -57,7 +57,7 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
             setRelatedModels("");
             setTags([]);
             setVersion("");
-            setUploadDate("");
+            setPublishedDate("");
             setHash("");
             setError(null);
             onCheckpointAdded();
@@ -126,9 +126,9 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
                             />
                             <input
                                 type="text"
-                                value={uploadDate}
-                                onChange={(e) => setUploadDate(e.target.value)}
-                                placeholder="Upload Date (YYYY-MM-DD)"
+                                value={publishedDate}
+                                onChange={(e) => setPublishedDate(e.target.value)}
+                                placeholder="Published Date (YYYY-MM-DD)"
                                 className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
                             />
                         </div>

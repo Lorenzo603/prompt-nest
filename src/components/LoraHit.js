@@ -121,9 +121,9 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
           </div>
         )}
 
-        {hit.uploadDate && (
+        {hit.publishedDate && (
           <div className="text-sm text-gray-600">
-            <span className="font-medium">Upload Date:</span> {new Date(hit.uploadDate).toLocaleDateString()}
+            <span className="font-medium">Published Date:</span> {new Date(hit.publishedDate).toLocaleDateString()}
           </div>
         )}
         

@@ -13,7 +13,7 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
     const [triggerWords, setTriggerWords] = useState(lora.triggerWords ? lora.triggerWords.join(", ") : "");
     const [settings, setSettings] = useState(lora.settings || "");
     const [version, setVersion] = useState(lora.version || "");
-    const [uploadDate, setUploadDate] = useState(lora.uploadDate || "");
+    const [publishedDate, setPublishedDate] = useState(lora.publishedDate || "");
     const [hash, setHash] = useState(lora.hash || "");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +47,7 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                     triggerWords: triggerWordList,
                     tags: tagList,
                     version: version,
-                    uploadDate: uploadDate,
+                    publishedDate: publishedDate,
                     hash: hash,
                 }),
             });
@@ -69,7 +69,7 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                 triggerWords: triggerWordList,
                 tags: tagList,
                 version,
-                uploadDate,
+                publishedDate,
             });
         } catch (error) {
             console.error('Update error:', error);
@@ -128,9 +128,9 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                             />
                             <input
                                 type="text"
-                                value={uploadDate}
-                                onChange={(e) => setUploadDate(e.target.value)}
-                                placeholder="Upload Date (YYYY-MM-DD)"
+                                value={publishedDate}
+                                onChange={(e) => setPublishedDate(e.target.value)}
+                                placeholder="Published Date (YYYY-MM-DD)"
                                 className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
                             />
                             

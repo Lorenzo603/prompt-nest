@@ -24,7 +24,7 @@ export const getLoras = async () => {
   return loras;
 };
 
-export const addLora = async ({ name, description, filename, triggerWords, urls, settings, baseModel, tags, version, uploadDate, hash }) => {
+export const addLora = async ({ name, description, filename, triggerWords, urls, settings, baseModel, tags, version, publishedDate, hash }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -49,7 +49,7 @@ export const addLora = async ({ name, description, filename, triggerWords, urls,
     settings: settings,
     baseModel: baseModel, 
     version: version,
-    uploadDate: uploadDate ? new Date(uploadDate) : null,
+    publishedDate: publishedDate ? new Date(publishedDate) : null,
     hash: hash,
   }).returning();
 
@@ -67,7 +67,7 @@ export const addLora = async ({ name, description, filename, triggerWords, urls,
       settings: inserted.settings,
       tags: tagNames,
       version: inserted.version,
-      uploadDate: inserted.uploadDate,
+      publishedDate: inserted.publishedDate,
       hash: inserted.hash,
     });
   } catch (err) {
@@ -77,7 +77,7 @@ export const addLora = async ({ name, description, filename, triggerWords, urls,
   return { message: "Lora added successfully" };
 };
 
-export const updateLora = async ({ id, name, description, filename, triggerWords, urls, settings, baseModel, tags, version, uploadDate, hash }) => {
+export const updateLora = async ({ id, name, description, filename, triggerWords, urls, settings, baseModel, tags, version, publishedDate, hash }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -101,7 +101,7 @@ export const updateLora = async ({ id, name, description, filename, triggerWords
       baseModel: baseModel,
       settings: settings,
       version: version,
-      uploadDate: uploadDate ? new Date(uploadDate) : null,
+      publishedDate: publishedDate ? new Date(publishedDate) : null,
       hash: hash,
     })
     .where(eq(lorasTable.id, id))
@@ -119,7 +119,7 @@ export const updateLora = async ({ id, name, description, filename, triggerWords
       settings: updated.settings || '',
       tags: tagNames,
       version: updated.version || '',
-      uploadDate: updated.uploadDate ? updated.uploadDate.toISOString() : '',
+      publishedDate: updated.publishedDate ? updated.publishedDate.toISOString() : '',
       hash: updated.hash || '',
     });
   } catch (err) {
