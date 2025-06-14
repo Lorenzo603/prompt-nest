@@ -66,9 +66,7 @@ const PromptSearch = forwardRef(({ onPromptUpdated }, ref) => {
         <SearchController ref={ref} />
         <div className="mb-4">
           <SearchBox
-            translations={{
-              placeholder: "Search prompts...",
-            }}
+            placeholder="Search prompts..."
             classNames={{
               input: "px-3 py-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50",
             }}
