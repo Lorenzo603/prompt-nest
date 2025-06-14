@@ -77,12 +77,12 @@ class TypesenseManager:
     def update_collection(self, collection_name):
         update_response = self.client.collections[collection_name].update({
             'fields': [
-                # {
-                # 'name'  :  'num_employees',
-                # 'drop'  :  True
-                # },
-                {'name': 'hash', 'type': 'string',  'optional': True},
-                # {'name': 'uploadDate', 'type': 'string', 'sort': True,  'optional': True},
+                {
+                'name'  :  'uploadDate',
+                'drop'  :  True
+                },
+                # {'name': 'hash', 'type': 'string',  'optional': True},
+                {'name': 'publishedDate', 'type': 'string', 'sort': True,  'optional': True},
             ],
         })
         print("Collection update response:", update_response)
