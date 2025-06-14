@@ -24,7 +24,7 @@ export const checkpointsTable = pgTable("checkpoints", {
   baseModel: text(), // e.g., 'gpt-3.5-turbo'
   relatedModels: text().array().default([]), // e.g. parent checkpoint or loras
   settings: text(), // recommended model settings
-  uploadDate: timestamp(),
+  publishedDate: timestamp(),
   version: text(),
   hash: text(), // file hash for integrity verification
 });
@@ -40,7 +40,7 @@ export const lorasTable = pgTable("loras", {
   urls: text().array().default([]),
   settings: text(), // recommended model settings
   baseModel: text(), // parent checkpoint
-  uploadDate: timestamp(),
+  publishedDate: timestamp(),
   version: text(),
   hash: text(), // file hash for integrity verification
 });

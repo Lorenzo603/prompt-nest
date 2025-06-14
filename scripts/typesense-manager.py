@@ -81,8 +81,8 @@ class TypesenseManager:
                 # 'name'  :  'num_employees',
                 # 'drop'  :  True
                 # },
-                {'name': 'version', 'type': 'string',  'optional': True},
-                {'name': 'uploadDate', 'type': 'string', 'sort': True,  'optional': True},
+                {'name': 'hash', 'type': 'string',  'optional': True},
+                # {'name': 'uploadDate', 'type': 'string', 'sort': True,  'optional': True},
             ],
         })
         print("Collection update response:", update_response)
@@ -93,7 +93,7 @@ class TypesenseManager:
         print("Collection deletion response:", delete_response)
         return delete_response
 
-    def search_documents(self, query='', query_by='text, tags', filter_by=None, sort_by='creationDate:desc', page=1, per_page=10):
+    def search_documents(self, collection_name, query='', query_by='*', filter_by=None, sort_by='creationDate:desc', page=1, per_page=10):
         search_parameters = {
             'q': query,
             'query_by': query_by,
@@ -104,7 +104,7 @@ class TypesenseManager:
         if filter_by:
             search_parameters['filter_by'] = filter_by
 
-        search_response = self.client.collections['prompts'].documents.search(search_parameters)
+        search_response = self.client.collections[collection_name].documents.search(search_parameters)
         print("Search response:", json.dumps(search_response, indent=2))
         return search_response
 
@@ -149,7 +149,9 @@ if __name__ == "__main__":
     # manager.update_collection('promptnest_loras')
 
     # manager.delete_collection()
-    # manager.search_documents()
+    # manager.search_documents('promptnest_checkpoints')
+    manager.search_documents('promptnest_loras')
+    
     # manager.create_api_key()
     # manager.list_api_keys()
     # manager.retrieve_api_key()
