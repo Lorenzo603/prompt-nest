@@ -24,7 +24,7 @@ export const getLoras = async () => {
   return loras;
 };
 
-export const addLora = async ({ name, description, filename, triggerWords, urls, settings, baseModel, tags }) => {
+export const addLora = async ({ name, description, filename, triggerWords, urls, settings, baseModel, tags, version, uploadDate }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -46,8 +46,10 @@ export const addLora = async ({ name, description, filename, triggerWords, urls,
     filename: filename, 
     triggerWords: triggerWordsList, 
     urls: urlsList, 
-    settings: settings || {},
+    settings: settings,
     baseModel: baseModel, 
+    version: version,
+    uploadDate: uploadDate ? new Date(uploadDate) : null,
   }).returning();
 
   // Index in Typesense
@@ -61,8 +63,10 @@ export const addLora = async ({ name, description, filename, triggerWords, urls,
       baseModel: inserted.baseModel,
       filename: inserted.filename,
       urls: inserted.urls || [],
-      settings: inserted.settings || {},
+      settings: inserted.settings,
       tags: tagNames,
+      version: inserted.version,
+      uploadDate: inserted.uploadDate,
     });
   } catch (err) {
     console.error('Typesense indexing error:', err);
@@ -71,7 +75,7 @@ export const addLora = async ({ name, description, filename, triggerWords, urls,
   return { message: "Lora added successfully" };
 };
 
-export const updateLora = async ({ id, name, description, filename, triggerWords, urls, settings, baseModel, tags }) => {
+export const updateLora = async ({ id, name, description, filename, triggerWords, urls, settings, baseModel, tags, version, uploadDate }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -93,7 +97,9 @@ export const updateLora = async ({ id, name, description, filename, triggerWords
       triggerWords: triggerWordsList,
       urls: urlsList, 
       baseModel: baseModel,
-      settings: settings || {},
+      settings: settings,
+      version: version,
+      uploadDate: uploadDate ? new Date(uploadDate) : null,
     })
     .where(eq(lorasTable.id, id))
     .returning();
@@ -107,8 +113,10 @@ export const updateLora = async ({ id, name, description, filename, triggerWords
       baseModel: updated.baseModel,
       filename: updated.filename || '',
       urls: updated.urls || [],
-      settings: updated.settings || {},
+      settings: updated.settings || '',
       tags: tagNames,
+      version: updated.version || '',
+      uploadDate: updated.uploadDate ? updated.uploadDate.toISOString() : '',
     });
   } catch (err) {
     console.error('Typesense update error:', err);

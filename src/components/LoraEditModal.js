@@ -10,7 +10,9 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
     const [urls, setUrls] = useState(lora.urls ? lora.urls.join(", ") : "");
     const [baseModel, setBaseModel] = useState(lora.baseModel || "");
     const [triggerWords, setTriggerWords] = useState(lora.triggerWords ? lora.triggerWords.join(", ") : "");
-    const [settings, setSettings] = useState(lora.settings ? JSON.stringify(lora.settings, null, 2) : "");
+    const [settings, setSettings] = useState(lora.settings || "");
+    const [version, setVersion] = useState(lora.version || "");
+    const [uploadDate, setUploadDate] = useState(lora.uploadDate || "");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -27,17 +29,7 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
             const tagList = tags.split(",").map(t => t.trim()).filter(Boolean);
             const urlList = urls.split(",").map(u => u.trim()).filter(Boolean);
             const triggerWordList = triggerWords.split(",").map(t => t.trim()).filter(Boolean);
-            
-            let parsedSettings = {};
-            if (settings.trim()) {
-                try {
-                    parsedSettings = JSON.parse(settings);
-                } catch (e) {
-                    setError("Invalid JSON format in settings.");
-                    setIsLoading(false);
-                    return;
-                }
-            }
+    
             
             const response = await fetch(`/api/loras`, {
                 method: "PUT",
@@ -48,10 +40,12 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                     description: description, 
                     filename: filename, 
                     urls: urlList, 
-                    settings: parsedSettings,
+                    settings: settings,
                     baseModel: baseModel, 
                     triggerWords: triggerWordList,
                     tags: tagList,
+                    version: version,
+                    uploadDate: uploadDate,
                 }),
             });
             
@@ -67,10 +61,12 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                 description,
                 filename,
                 urls: urlList,
-                settings: parsedSettings,
+                settings: settings,
                 baseModel,
                 triggerWords: triggerWordList,
                 tags: tagList,
+                version,
+                uploadDate,
             });
         } catch (error) {
             console.error('Update error:', error);
@@ -93,6 +89,13 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder="Lora Name"
+                                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
+                            />
+                            <input
+                                type="text"
+                                value={version}
+                                onChange={(e) => setVersion(e.target.value)}
+                                placeholder="Lora Version"
                                 className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
                             />
                             <input
@@ -122,13 +125,20 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                             />
                             <input
                                 type="text"
-                                value={urls}
-                                onChange={(e) => setUrls(e.target.value)}
-                                placeholder="URLs (comma separated)"
+                                value={uploadDate}
+                                onChange={(e) => setUploadDate(e.target.value)}
+                                placeholder="Upload Date (YYYY-MM-DD)"
                                 className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
                             />
+                            
                         </div>
-                        
+                        <input
+                            type="text"
+                            value={urls}
+                            onChange={(e) => setUrls(e.target.value)}
+                            placeholder="URLs (comma separated)"
+                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
+                        />
                         <input
                             type="text"
                             value={triggerWords}
@@ -140,7 +150,7 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                         <textarea
                             value={settings}
                             onChange={(e) => setSettings(e.target.value)}
-                            placeholder="Settings (JSON format)"
+                            placeholder="Settings"
                             rows={4}
                             className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50 font-mono text-sm"
                         />
@@ -152,6 +162,7 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                             placeholder="Tags (comma separated)"
                             className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
                         />
+                      
                     </div>
                     
                     {error && <div className="text-red-500 text-sm mt-2">{error}</div>}

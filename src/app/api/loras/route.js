@@ -7,14 +7,14 @@ export async function GET() {
 }
 
 export async function POST(request) {
-  const { name, description, filename, triggerWords, urls, settings, baseModel, tags } = await request.json();
-  const result = await addLora({ name, description, filename, triggerWords, urls, settings, baseModel, tags });
+  const { name, description, filename, triggerWords, urls, settings, baseModel, tags, version, uploadDate } = await request.json();
+  const result = await addLora({ name, description, filename, triggerWords, urls, settings, baseModel, tags, version, uploadDate });
   return NextResponse.json(result, { status: 201 });
 }
 
 export async function PUT(request) {
-  const { id, name, description, filename, triggerWords, urls, settings, baseModel, tags } = await request.json();
-  const result = await updateLora({ id, name, description, filename, triggerWords, urls, settings, baseModel, tags });
+  const { id, name, description, filename, triggerWords, urls, settings, baseModel, tags, version, uploadDate } = await request.json();
+  const result = await updateLora({ id, name, description, filename, triggerWords, urls, settings, baseModel, tags, version, uploadDate });
   return NextResponse.json(result);
 }
 

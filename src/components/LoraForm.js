@@ -13,6 +13,8 @@ const LoraForm = ({ onLoraAdded }) => {
     const [filename, setFilename] = useState("");
     const [urls, setUrls] = useState("");
     const [settings, setSettings] = useState("");
+    const [version, setVersion] = useState("");
+    const [uploadDate, setUploadDate] = useState("");
     const [error, setError] = useState(null);
 
     const handleSubmit = async (event) => {
@@ -25,18 +27,19 @@ const LoraForm = ({ onLoraAdded }) => {
             const tagList = tags.split(",").map(t => t.trim()).filter(Boolean);
             const triggerWordsList = triggerWords.split(",").map(t => t.trim()).filter(Boolean);
             const urlsList = urls.split(",").map(t => t.trim()).filter(Boolean);
-            const response = await fetch("/api/loras", {
+            const response = await fetch(`/api/loras`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
                     name: loraName, 
-                    description: loraDescription,
-                    filename: filename,
-                    triggerWords: triggerWordsList,
-                    urls: urlsList,
-                    settings: settings ? JSON.parse(settings) : {},
-                    baseModel: baseModel,
+                    description: loraDescription, 
+                    filename: filename, 
+                    urls: urlsList, 
+                    settings: settings,
+                    baseModel: baseModel, 
                     tags: tagList,
+                    version: version,
+                    uploadDate: uploadDate,
                 }),
             });
             const result = await response.json();
@@ -48,6 +51,8 @@ const LoraForm = ({ onLoraAdded }) => {
             setUrls("");
             setBaseModel(DEFAULT_LORA_BASE_MODEL); // Reset base model to default
             setTags("");
+            setVersion("");
+            setUploadDate("");
             setError(null);
             onLoraAdded();
         } catch (error) {
@@ -79,6 +84,13 @@ const LoraForm = ({ onLoraAdded }) => {
                                 placeholder="Enter lora name"
                                 className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
                             />
+                            <input
+                                type="text"
+                                value={version}
+                                onChange={(e) => setVersion(e.target.value)}
+                                placeholder="Lora Version"
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
+                            />
                         </div>
                         <textarea
                             value={loraDescription}
@@ -94,13 +106,22 @@ const LoraForm = ({ onLoraAdded }) => {
                             placeholder="Trigger words (comma separated)"
                             className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
                         />
-                        <input
-                            type="text"
-                            value={filename}
-                            onChange={e => setFilename(e.target.value)}
-                            placeholder="Filename (e.g., lora.safetensors)"
-                            className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
-                        />
+                        <div className="flex flex-col sm:flex-row gap-2">
+                            <input
+                                type="text"
+                                value={filename}
+                                onChange={e => setFilename(e.target.value)}
+                                placeholder="Filename (e.g., lora.safetensors)"
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
+                            />
+                            <input
+                                type="text"
+                                value={uploadDate}
+                                onChange={(e) => setUploadDate(e.target.value)}
+                                placeholder="Upload Date (YYYY-MM-DD)"
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
+                            />
+                        </div>
                         <input
                             type="text"
                             value={urls}
@@ -112,7 +133,7 @@ const LoraForm = ({ onLoraAdded }) => {
                             type="text"
                             value={settings}
                             onChange={(e) => setSettings(e.target.value)}
-                            placeholder="Settings (JSON string)"
+                            placeholder="Settings"
                             className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
                         />
                         <input
@@ -122,6 +143,7 @@ const LoraForm = ({ onLoraAdded }) => {
                             placeholder="Tags (comma separated)"
                             className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
                         />
+                        
                     </div>
                     <div className="flex">
                         <button

@@ -49,7 +49,7 @@ export const addCheckpoint = async ({ name, description, filename,
     relatedModels: relatedModelList,
     settings: settings,
     version: version,
-    uploadDate: uploadDate,
+    uploadDate: uploadDate ? new Date(uploadDate) : null,
   }).returning();
 
   // Index in Typesense
@@ -100,7 +100,7 @@ export const updateCheckpoint = async ({ id, name, description, filename,
       relatedModels: relatedModelList,
       settings: settings,
       version: version,
-      uploadDate: uploadDate,
+      uploadDate: uploadDate ? new Date(uploadDate) : null,
     })
     .where(eq(checkpointsTable.id, id))
     .returning();
@@ -117,7 +117,7 @@ export const updateCheckpoint = async ({ id, name, description, filename,
       baseModel: updated.baseModel || '',
       relatedModels: updated.relatedModels || [],
       version: updated.version || '',
-      uploadDate: updated.uploadDate || '',
+      uploadDate: updated.uploadDate ? updated.uploadDate.toISOString() : '',
     });
   } catch (err) {
     console.error('Typesense update error:', err);

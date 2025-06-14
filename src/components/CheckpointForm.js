@@ -53,6 +53,8 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
             setBaseModel("");
             setRelatedModels("");
             setTags("");
+            setVersion("");
+            setUploadDate("");
             setError(null);
             onCheckpointAdded();
         } catch (error) {
