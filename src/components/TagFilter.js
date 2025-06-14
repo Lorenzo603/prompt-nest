@@ -45,7 +45,7 @@ const TagFilter = ({
         ...indexUiState,
         configure: {
           ...indexUiState.configure,
-          filters: undefined,
+          filters: '',
         },
       });
     } else {
