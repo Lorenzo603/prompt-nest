@@ -64,7 +64,7 @@ const TagFilter = ({
   };
 
   return (
-    <div className="mb-4">
+    <div>
       <input
         type="text"
         value={tagFilter}
