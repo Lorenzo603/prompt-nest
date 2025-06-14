@@ -25,7 +25,7 @@ export const getCheckpoints = async () => {
 };
 
 export const addCheckpoint = async ({ name, description, filename, 
-    urls, settings, baseModel, relatedModels, tags, version, uploadDate }) => {
+    urls, settings, baseModel, relatedModels, tags, version, uploadDate, hash }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -50,6 +50,7 @@ export const addCheckpoint = async ({ name, description, filename,
     settings: settings,
     version: version,
     uploadDate: uploadDate ? new Date(uploadDate) : null,
+    hash: hash,
   }).returning();
 
   // Index in Typesense
@@ -67,6 +68,7 @@ export const addCheckpoint = async ({ name, description, filename,
       relatedModels: inserted.relatedModels || [],
       version: inserted.version || '',
       uploadDate: inserted.uploadDate || '',
+      hash: inserted.hash || '',
     });
   } catch (err) {
     console.error('Typesense indexing error:', err);
@@ -76,7 +78,7 @@ export const addCheckpoint = async ({ name, description, filename,
 };
 
 export const updateCheckpoint = async ({ id, name, description, filename, 
-    urls, settings, baseModel, relatedModels, tags, version, uploadDate }) => {
+    urls, settings, baseModel, relatedModels, tags, version, uploadDate, hash }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -101,6 +103,7 @@ export const updateCheckpoint = async ({ id, name, description, filename,
       settings: settings,
       version: version,
       uploadDate: uploadDate ? new Date(uploadDate) : null,
+      hash: hash,
     })
     .where(eq(checkpointsTable.id, id))
     .returning();
@@ -118,6 +121,7 @@ export const updateCheckpoint = async ({ id, name, description, filename,
       relatedModels: updated.relatedModels || [],
       version: updated.version || '',
       uploadDate: updated.uploadDate ? updated.uploadDate.toISOString() : '',
+      hash: updated.hash || '',
     });
   } catch (err) {
     console.error('Typesense update error:', err);

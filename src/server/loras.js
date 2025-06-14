@@ -24,7 +24,7 @@ export const getLoras = async () => {
   return loras;
 };
 
-export const addLora = async ({ name, description, filename, triggerWords, urls, settings, baseModel, tags, version, uploadDate }) => {
+export const addLora = async ({ name, description, filename, triggerWords, urls, settings, baseModel, tags, version, uploadDate, hash }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -50,6 +50,7 @@ export const addLora = async ({ name, description, filename, triggerWords, urls,
     baseModel: baseModel, 
     version: version,
     uploadDate: uploadDate ? new Date(uploadDate) : null,
+    hash: hash,
   }).returning();
 
   // Index in Typesense
@@ -67,6 +68,7 @@ export const addLora = async ({ name, description, filename, triggerWords, urls,
       tags: tagNames,
       version: inserted.version,
       uploadDate: inserted.uploadDate,
+      hash: inserted.hash,
     });
   } catch (err) {
     console.error('Typesense indexing error:', err);
@@ -75,7 +77,7 @@ export const addLora = async ({ name, description, filename, triggerWords, urls,
   return { message: "Lora added successfully" };
 };
 
-export const updateLora = async ({ id, name, description, filename, triggerWords, urls, settings, baseModel, tags, version, uploadDate }) => {
+export const updateLora = async ({ id, name, description, filename, triggerWords, urls, settings, baseModel, tags, version, uploadDate, hash }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -100,6 +102,7 @@ export const updateLora = async ({ id, name, description, filename, triggerWords
       settings: settings,
       version: version,
       uploadDate: uploadDate ? new Date(uploadDate) : null,
+      hash: hash,
     })
     .where(eq(lorasTable.id, id))
     .returning();
@@ -117,6 +120,7 @@ export const updateLora = async ({ id, name, description, filename, triggerWords
       tags: tagNames,
       version: updated.version || '',
       uploadDate: updated.uploadDate ? updated.uploadDate.toISOString() : '',
+      hash: updated.hash || '',
     });
   } catch (err) {
     console.error('Typesense update error:', err);

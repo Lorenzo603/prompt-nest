@@ -14,6 +14,7 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
     const [settings, setSettings] = useState(lora.settings || "");
     const [version, setVersion] = useState(lora.version || "");
     const [uploadDate, setUploadDate] = useState(lora.uploadDate || "");
+    const [hash, setHash] = useState(lora.hash || "");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -47,6 +48,7 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                     tags: tagList,
                     version: version,
                     uploadDate: uploadDate,
+                    hash: hash,
                 }),
             });
             
@@ -154,6 +156,14 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                             placeholder="Settings"
                             rows={4}
                             className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50 font-mono text-sm"
+                        />
+                        
+                        <input
+                            type="text"
+                            value={hash}
+                            onChange={(e) => setHash(e.target.value)}
+                            placeholder="File Hash (SHA256, MD5, etc.)"
+                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
                         />
                         
                         <TagInput

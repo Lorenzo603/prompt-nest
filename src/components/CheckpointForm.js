@@ -15,6 +15,7 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
     const [relatedModels, setRelatedModels] = useState("");
     const [settings, setSettings] = useState("");
     const [uploadDate, setUploadDate] = useState("");
+    const [hash, setHash] = useState("");
 
     const [error, setError] = useState(null);
 
@@ -42,6 +43,7 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
                     tags: tagList,
                     version: version,
                     uploadDate: uploadDate,
+                    hash: hash,
                  }),
             });
             const result = await response.json();
@@ -56,6 +58,7 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
             setTags([]);
             setVersion("");
             setUploadDate("");
+            setHash("");
             setError(null);
             onCheckpointAdded();
         } catch (error) {
@@ -135,6 +138,13 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
                             onChange={(e) => setSettings(e.target.value)}
                             placeholder="Settings"
                             className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
+                        />
+                        <input
+                            type="text"
+                            value={hash}
+                            onChange={(e) => setHash(e.target.value)}
+                            placeholder="File Hash (SHA256, MD5, etc.)"
+                            className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-400 text-gray-800 bg-gray-50"
                         />
                         
                         <TagInput

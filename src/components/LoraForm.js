@@ -16,6 +16,7 @@ const LoraForm = ({ onLoraAdded }) => {
     const [settings, setSettings] = useState("");
     const [version, setVersion] = useState("");
     const [uploadDate, setUploadDate] = useState("");
+    const [hash, setHash] = useState("");
     const [error, setError] = useState(null);
 
     const handleSubmit = async (event) => {
@@ -33,14 +34,16 @@ const LoraForm = ({ onLoraAdded }) => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
                     name: loraName, 
-                    description: loraDescription, 
+                    description: loraDescription,
                     filename: filename, 
+                    triggerWords: triggerWordsList,
                     urls: urlsList, 
                     settings: settings,
                     baseModel: baseModel, 
                     tags: tagList,
                     version: version,
                     uploadDate: uploadDate,
+                    hash: hash,
                 }),
             });
             const result = await response.json();
@@ -54,6 +57,7 @@ const LoraForm = ({ onLoraAdded }) => {
             setTags([]);
             setVersion("");
             setUploadDate("");
+            setHash("");
             setError(null);
             onLoraAdded();
         } catch (error) {
@@ -136,6 +140,13 @@ const LoraForm = ({ onLoraAdded }) => {
                             onChange={(e) => setSettings(e.target.value)}
                             placeholder="Settings"
                             className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
+                        />
+                        <input
+                            type="text"
+                            value={hash}
+                            onChange={(e) => setHash(e.target.value)}
+                            placeholder="File Hash (SHA256, MD5, etc.)"
+                            className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
                         />
                         <TagInput
                             value={tags}

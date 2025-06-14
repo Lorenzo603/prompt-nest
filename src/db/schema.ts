@@ -26,6 +26,7 @@ export const checkpointsTable = pgTable("checkpoints", {
   settings: text(), // recommended model settings
   uploadDate: timestamp(),
   version: text(),
+  hash: text(), // file hash for integrity verification
 });
 
 export const lorasTable = pgTable("loras", {
@@ -41,5 +42,6 @@ export const lorasTable = pgTable("loras", {
   baseModel: text(), // parent checkpoint
   uploadDate: timestamp(),
   version: text(),
+  hash: text(), // file hash for integrity verification
 });
 
