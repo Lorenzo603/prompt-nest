@@ -65,18 +65,18 @@ const CheckpointSearch = forwardRef(({ onCheckpointUpdated }, ref) => {
         future={{ preserveSharedStateOnUnmount: true }}
       >
         <SearchController ref={ref} />
-        <div className="mb-4">
+        <div className="mb-4 bg-gray-400 p-4 rounded shadow">
           <SearchBox
             placeholder="Search checkpoints/models..."
             classNames={{
               input: "px-3 py-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50",
             }}
           />
+          <TagFilter 
+            colorTheme="green"
+            placeholder="Filter by tags (comma separated, e.g., realistic, style)"
+          />
         </div>
-        <TagFilter 
-          colorTheme="green"
-          placeholder="Filter by tags (comma separated, e.g., realistic, style)"
-        />
         <Configure hitsPerPage={20} />
         <Hits 
           hitComponent={(props) => (
