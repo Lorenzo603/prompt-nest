@@ -176,7 +176,7 @@ const TagInput = ({ value = [], onChange, placeholder = "Add tags...", className
               onClick={() => addTag(inputValue.trim())}
               className={`px-3 py-2 cursor-pointer text-sm border-t border-gray-200 font-medium ${getHighlightColorClass(selectedIndex === suggestions.length)}`}
             >
-              + Create "{inputValue.trim()}"
+              + Create &ldquo;{inputValue.trim()}&ldquo;
             </div>
           )}
         </div>
