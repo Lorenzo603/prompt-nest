@@ -44,6 +44,11 @@ const CheckpointHit = ({ hit, onCheckpointUpdated }) => {
             <span className="text-lg font-semibold text-gray-800">
               <Highlight hit={hit} attribute="name" />
             </span>
+            {hit.version && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 text-sm font-bold rounded uppercase">
+                {hit.version}
+              </span>
+            )}
             <span className="text-xs text-gray-400">#{hit.id}</span>
           </div>
           <div className="flex items-center gap-2">
@@ -106,6 +111,12 @@ const CheckpointHit = ({ hit, onCheckpointUpdated }) => {
           <div className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
             <span className="font-medium">Settings:</span>
             <pre className="text-xs mt-1 whitespace-pre-wrap">{hit.settings}</pre>
+          </div>
+        )}
+
+        {hit.uploadDate && (
+          <div className="text-sm text-gray-600">
+            <span className="font-medium">Upload Date:</span> {new Date(hit.uploadDate).toLocaleDateString()}
           </div>
         )}
         
