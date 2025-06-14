@@ -5,6 +5,7 @@ import React, { useState } from "react";
 
 const CheckpointForm = ({ onCheckpointAdded }) => {
     const [name, setName] = useState("");
+    const [version, setVersion] = useState("");
     const [description, setDescription] = useState("");
     const [tags, setTags] = useState("");
     const [filename, setFilename] = useState("");
@@ -12,6 +13,7 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
     const [baseModel, setBaseModel] = useState("");
     const [relatedModels, setRelatedModels] = useState("");
     const [settings, setSettings] = useState("");
+    const [uploadDate, setUploadDate] = useState("");
 
     const [error, setError] = useState(null);
 
@@ -33,10 +35,12 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
                     description: description, 
                     filename: filename, 
                     urls: urlList, 
-                    settings: settings ? JSON.parse(settings) : {},
+                    settings: settings,
                     baseModel: baseModel, 
                     relatedModels: relatedModelList,
                     tags: tagList,
+                    version: version,
+                    uploadDate: uploadDate,
                  }),
             });
             const result = await response.json();
@@ -71,14 +75,20 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
                             />
                             <input
                                 type="text"
+                                value={version}
+                                onChange={(e) => setVersion(e.target.value)}
+                                placeholder="Checkpoint Version"
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
+                            />
+                            <input
+                                type="text"
                                 value={baseModel}
                                 onChange={(e) => setBaseModel(e.target.value)}
                                 placeholder="Base Model"
                                 className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
                             />
                         </div>
-                        <input
-                            type="text"
+                        <textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="Description"
@@ -94,28 +104,35 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
                             />
                             <input
                                 type="text"
-                                value={urls}
-                                onChange={(e) => setUrls(e.target.value)}
-                                placeholder="URLs (comma separated)"
+                                value={relatedModels}
+                                onChange={(e) => setRelatedModels(e.target.value)}
+                                placeholder="Related Models (comma separated)"
                                 className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
                             />
                         </div>
                         <div className="flex flex-col sm:flex-row gap-2">
                             <input
                                 type="text"
-                                value={relatedModels}
-                                onChange={(e) => setRelatedModels(e.target.value)}
-                                placeholder="Related Models (comma separated)"
+                                value={urls}
+                                onChange={(e) => setUrls(e.target.value)}
+                                placeholder="URLs (comma separated)"
                                 className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
                             />
                             <input
                                 type="text"
-                                value={settings}
-                                onChange={(e) => setSettings(e.target.value)}
-                                placeholder="Settings (JSON string)"
+                                value={uploadDate}
+                                onChange={(e) => setUploadDate(e.target.value)}
+                                placeholder="Upload Date (YYYY-MM-DD)"
                                 className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
                             />
                         </div>
+                        <input
+                            type="text"
+                            value={settings}
+                            onChange={(e) => setSettings(e.target.value)}
+                            placeholder="Settings"
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
+                        />
                         
                         <input
                             type="text"

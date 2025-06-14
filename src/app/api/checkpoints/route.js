@@ -8,17 +8,17 @@ export async function GET() {
 
 export async function POST(request) {
   const { name, description, filename, 
-    urls, settings, baseModel, relatedModels, tags } = await request.json();
+    urls, settings, baseModel, relatedModels, tags, version, uploadDate } = await request.json();
   const result = await addCheckpoint({ name, description, filename, 
-    urls, settings, baseModel, relatedModels, tags });
+    urls, settings, baseModel, relatedModels, tags, version, uploadDate });
   return NextResponse.json(result, { status: 201 });
 }
 
 export async function PUT(request) {
   const { id, name, description, filename, 
-    urls, settings, baseModel, relatedModels, tags } = await request.json();
+    urls, settings, baseModel, relatedModels, tags, version, uploadDate } = await request.json();
   const result = await updateCheckpoint({ id, name, description, filename, 
-    urls, settings, baseModel, relatedModels, tags });
+    urls, settings, baseModel, relatedModels, tags, version, uploadDate });
   return NextResponse.json(result);
 }
 

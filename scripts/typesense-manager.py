@@ -73,6 +73,20 @@ class TypesenseManager:
         })
         print("Collection creation response:", create_response)
         return create_response
+    
+    def update_collection(self, collection_name):
+        update_response = self.client.collections[collection_name].update({
+            'fields': [
+                # {
+                # 'name'  :  'num_employees',
+                # 'drop'  :  True
+                # },
+                {'name': 'version', 'type': 'string',  'optional': True},
+                {'name': 'uploadDate', 'type': 'string', 'sort': True,  'optional': True},
+            ],
+        })
+        print("Collection update response:", update_response)
+        return update_response
 
     def delete_collection(self, collection_name):
         delete_response = self.client.collections[collection_name].delete()
@@ -130,6 +144,9 @@ if __name__ == "__main__":
     # manager.create_collection_prompts()
     # manager.create_collection_checkpoints()
     # manager.create_collection_loras()
+    
+    # manager.update_collection('promptnest_checkpoints')
+    # manager.update_collection('promptnest_loras')
 
     # manager.delete_collection()
     # manager.search_documents()

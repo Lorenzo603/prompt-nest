@@ -25,7 +25,7 @@ export const getCheckpoints = async () => {
 };
 
 export const addCheckpoint = async ({ name, description, filename, 
-    urls, settings, baseModel, relatedModels, tags }) => {
+    urls, settings, baseModel, relatedModels, tags, version, uploadDate }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -47,7 +47,9 @@ export const addCheckpoint = async ({ name, description, filename,
     urls: urlList, 
     baseModel: baseModel,
     relatedModels: relatedModelList,
-    settings: settings || {},
+    settings: settings,
+    version: version,
+    uploadDate: uploadDate,
   }).returning();
 
   // Index in Typesense
@@ -63,6 +65,8 @@ export const addCheckpoint = async ({ name, description, filename,
       settings: inserted.settings || '',
       baseModel: inserted.baseModel || '',
       relatedModels: inserted.relatedModels || [],
+      version: inserted.version || '',
+      uploadDate: inserted.uploadDate || '',
     });
   } catch (err) {
     console.error('Typesense indexing error:', err);
@@ -72,7 +76,7 @@ export const addCheckpoint = async ({ name, description, filename,
 };
 
 export const updateCheckpoint = async ({ id, name, description, filename, 
-    urls, settings, baseModel, relatedModels, tags }) => {
+    urls, settings, baseModel, relatedModels, tags, version, uploadDate }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -94,7 +98,9 @@ export const updateCheckpoint = async ({ id, name, description, filename,
       urls: urlList, 
       baseModel: baseModel,
       relatedModels: relatedModelList,
-      settings: settings || {},
+      settings: settings,
+      version: version,
+      uploadDate: uploadDate,
     })
     .where(eq(checkpointsTable.id, id))
     .returning();
@@ -110,6 +116,8 @@ export const updateCheckpoint = async ({ id, name, description, filename,
       settings: updated.settings || '',
       baseModel: updated.baseModel || '',
       relatedModels: updated.relatedModels || [],
+      version: updated.version || '',
+      uploadDate: updated.uploadDate || '',
     });
   } catch (err) {
     console.error('Typesense update error:', err);
