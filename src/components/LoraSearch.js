@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef, useImperativeHandle } from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
 import {
   InstantSearch,
@@ -10,6 +10,7 @@ import {
   useInstantSearch,
 } from "react-instantsearch";
 import LoraHit from "./LoraHit";
+import TagFilter from "./TagFilter";
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: {
@@ -72,6 +73,10 @@ const LoraSearch = forwardRef(({ onLoraUpdated }, ref) => {
             }}
           />
         </div>
+        <TagFilter 
+          colorTheme="purple"
+          placeholder="Filter by tags (comma separated, e.g., anime, portrait)"
+        />
         <Configure hitsPerPage={20} />
         <Hits 
           hitComponent={(props) => (

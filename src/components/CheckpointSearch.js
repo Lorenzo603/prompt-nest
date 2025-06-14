@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef, useImperativeHandle } from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
 import {
   InstantSearch,
@@ -10,6 +10,7 @@ import {
   useInstantSearch,
 } from "react-instantsearch";
 import CheckpointHit from "./CheckpointHit";
+import TagFilter from "./TagFilter";
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: {
@@ -72,6 +73,10 @@ const CheckpointSearch = forwardRef(({ onCheckpointUpdated }, ref) => {
             }}
           />
         </div>
+        <TagFilter 
+          colorTheme="green"
+          placeholder="Filter by tags (comma separated, e.g., realistic, style)"
+        />
         <Configure hitsPerPage={20} />
         <Hits 
           hitComponent={(props) => (

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef, useImperativeHandle } from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
 import {
   InstantSearch,
@@ -10,6 +10,7 @@ import {
   useInstantSearch,
 } from "react-instantsearch";
 import PromptHit from "./PromptHit";
+import TagFilter from "./TagFilter";
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: {
@@ -72,6 +73,10 @@ const PromptSearch = forwardRef(({ onPromptUpdated }, ref) => {
             }}
           />
         </div>
+        <TagFilter 
+          colorTheme="blue"
+          placeholder="Filter by tags (comma separated, e.g., portrait, landscape)"
+        />
         <Configure hitsPerPage={20} />
         <Hits 
           hitComponent={({ hit }) => (
