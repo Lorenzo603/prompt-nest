@@ -49,6 +49,11 @@ const CheckpointHit = ({ hit, onCheckpointUpdated }) => {
                 {hit.version}
               </span>
             )}
+            {hit.hash && (
+              <span className="text-xs text-gray-400">
+                {hit.hash.substring(0, 8)}
+              </span>
+            )}
             <span className="text-xs text-gray-400">#{hit.id}</span>
           </div>
           <div className="flex items-center gap-2">
