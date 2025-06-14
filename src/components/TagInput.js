@@ -144,7 +144,7 @@ const TagInput = ({ value = [], onChange, placeholder = "Add tags...", className
               className={`px-3 py-2 cursor-pointer text-sm ${
                 index === selectedIndex
                   ? 'bg-purple-100 text-purple-800'
-                  : 'hover:bg-gray-100'
+                  : 'hover:bg-gray-100 text-gray-800'
               }`}
             >
               {suggestion.name}
@@ -156,7 +156,7 @@ const TagInput = ({ value = [], onChange, placeholder = "Add tags...", className
               className={`px-3 py-2 cursor-pointer text-sm border-t border-gray-200 font-medium ${
                 selectedIndex === suggestions.length
                   ? 'bg-purple-100 text-purple-800'
-                  : 'hover:bg-gray-100 text-purple-600'
+                  : 'hover:bg-gray-300 text-gray-800'
               }`}
             >
               + Create "{inputValue.trim()}"
