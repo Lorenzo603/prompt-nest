@@ -7,6 +7,7 @@ export default function PromptClassifier() {
   const [classification, setClassification] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sortBy, setSortBy] = useState('original'); // 'original', 'category', 'confidence'
 
   const handleClassify = async () => {
     if (!prompt.trim()) {
@@ -16,14 +17,14 @@ export default function PromptClassifier() {
 
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch('/api/classify-prompt', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: prompt, useOllama: true }),
+        body: JSON.stringify({ prompt: prompt, useOllama: false }),
       });
 
       if (!response.ok) {
@@ -31,7 +32,11 @@ export default function PromptClassifier() {
       }
 
       const data = await response.json();
-      setClassification(data.classification);
+      const classificationWithIndex = data.classification.map((item, index) => ({
+        ...item,
+        originalIndex: index
+      }));
+      setClassification(classificationWithIndex);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -55,10 +60,30 @@ export default function PromptClassifier() {
     return colors[category.toLowerCase()] || 'bg-slate-100 text-slate-800 border-slate-200';
   };
 
+  const getSortedClassification = () => {
+    if (!classification) return [];
+
+    const sorted = [...classification];
+
+    switch (sortBy) {
+      case 'category':
+        return sorted.sort((a, b) => {
+          const aFirstCategory = a.categories[0] || '';
+          const bFirstCategory = b.categories[0] || '';
+          return aFirstCategory.localeCompare(bFirstCategory);
+        });
+      case 'confidence':
+        return sorted.sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
+      case 'original':
+      default:
+        return sorted.sort((a, b) => a.originalIndex - b.originalIndex);
+    }
+  };
+
   return (
     <div className="container mx-auto p-6 max-w-4xl">
       <h1 className="text-3xl font-bold mb-6 text-slate-100">Prompt Classifier</h1>
-      
+
       {/* Input Section */}
       <div className="mb-6">
         <label htmlFor="prompt-input" className="block text-sm font-medium text-slate-100 mb-2">
@@ -101,19 +126,36 @@ export default function PromptClassifier() {
       {/* Results Section */}
       {classification && (
         <div className="space-y-6">
-          <h2 className="text-2xl font-semibold text-slate-100 border-b border-gray-200 pb-2">
-            Classification Results
-          </h2>
-          
+          <div className="flex items-center justify-between border-b border-gray-200 pb-2">
+            <h2 className="text-2xl font-semibold text-slate-100">
+              Classification Results
+            </h2>
+
+            {/* Sort Controls */}
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium text-slate-200">Sort by:</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="original">Original Order</option>
+                <option value="category">Category</option>
+                <option value="confidence">Confidence</option>
+              </select>
+            </div>
+          </div>
+
           <div className="grid gap-4">
-            {classification.map((item, index) => (
-              <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+            {getSortedClassification().map((item, displayIndex) => (
+              <div key={`${item.originalIndex}-${displayIndex}`} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
                 <div className="mb-3">
+
                   <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
                     <p className="text-gray-700 italic">"{item.text}"</p>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium text-gray-600 uppercase tracking-wide">Categories:</h4>
                   <div className="flex flex-wrap gap-2">
@@ -127,18 +169,21 @@ export default function PromptClassifier() {
                     ))}
                   </div>
                 </div>
-                
+
+
                 {item.confidence && (
                   <div className="mt-3 pt-3 border-t border-gray-100">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-500">Confidence:</span>
+                      <span className="flex items-center gap-1">
+                        <span className="text-xs text-gray-500">Confidence:</span>
+                        <span className="text-xs text-gray-600 font-medium">{item.confidence}%</span>
+                      </span>
                       <div className="flex-1 bg-gray-200 rounded-full h-2">
-                        <div 
+                        <div
                           className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                           style={{ width: `${item.confidence}%` }}
                         ></div>
                       </div>
-                      <span className="text-xs text-gray-600 font-medium">{item.confidence}%</span>
                     </div>
                   </div>
                 )}
@@ -149,23 +194,32 @@ export default function PromptClassifier() {
           {/* Summary */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h3 className="text-lg font-semibold text-blue-800 mb-2">Summary</h3>
-            <p className="text-blue-700">
-              Found <span className="font-semibold">{classification.length}</span> distinct parts in your prompt across{' '}
-              <span className="font-semibold">
-                {[...new Set(classification.flatMap(item => item.categories))].length}
-              </span>{' '}
-              different categories.
-            </p>
+            <div className="space-y-1">
+              <p className="text-blue-700">
+                Found <span className="font-semibold">{classification.length}</span> distinct parts in your prompt across{' '}
+                <span className="font-semibold">
+                  {[...new Set(classification.flatMap(item => item.categories))].length}
+                </span>{' '}
+                different categories.
+              </p>
+              <p className="text-blue-600 text-sm">
+                Currently sorted by: <span className="font-semibold">
+                  {sortBy === 'original' ? 'Original Order' :
+                    sortBy === 'category' ? 'Category (A-Z)' :
+                      'Confidence (High to Low)'}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       )}
-      
+
       {/* Help Text */}
       <div className="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg">
         <h3 className="text-sm font-semibold text-gray-700 mb-2">How it works:</h3>
         <p className="text-sm text-gray-600">
-          The classifier analyzes your prompt and breaks it down into meaningful parts, then categorizes each part 
-          (e.g., style, subject, lighting, environment). This helps you understand the structure of your prompt 
+          The classifier analyzes your prompt and breaks it down into meaningful parts, then categorizes each part
+          (e.g., style, subject, lighting, environment). This helps you understand the structure of your prompt
           and identify areas for improvement or expansion.
         </p>
       </div>
