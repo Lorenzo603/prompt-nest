@@ -109,7 +109,6 @@ export default function PromptClassifier() {
             {classification.map((item, index) => (
               <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
                 <div className="mb-3">
-                  <h3 className="text-lg font-medium text-gray-800 mb-2">Prompt Part {index + 1}</h3>
                   <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
                     <p className="text-gray-700 italic">"{item.text}"</p>
                   </div>
