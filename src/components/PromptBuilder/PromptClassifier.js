@@ -101,7 +101,7 @@ export default function PromptClassifier() {
       {/* Results Section */}
       {classification && (
         <div className="space-y-6">
-          <h2 className="text-2xl font-semibold text-gray-800 border-b border-gray-200 pb-2">
+          <h2 className="text-2xl font-semibold text-slate-100 border-b border-gray-200 pb-2">
             Classification Results
           </h2>
           
