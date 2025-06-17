@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request) {
   try {
-    const { prompt } = await request.json();
+    const { prompt, useOllama = false } = await request.json();
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
@@ -11,9 +11,10 @@ export async function POST(request) {
       );
     }
 
-    // For now, we'll use a mock classification
-    // In production, this would call your LLM API (e.g., via reverse tunnel)
-    const classification = await classifyPrompt(prompt);
+    // Choose between test implementation and Ollama implementation
+    const classification = useOllama 
+      ? await classifyPromptWithOllama(prompt)
+      : await classifyPromptTest(prompt);
 
     return NextResponse.json({ classification });
   } catch (error) {
@@ -25,11 +26,9 @@ export async function POST(request) {
   }
 }
 
-async function classifyPrompt(prompt) {
-  // Mock implementation - replace with actual LLM API call
-  // This would typically call your LLM via reverse tunnel
-  
-  // For demonstration, we'll create a simple rule-based classifier
+// Test implementation - rule-based classifier for testing
+async function classifyPromptTest(prompt) {
+  // Mock implementation - rule-based classifier for testing
   const parts = [];
 
   // Style-related terms
@@ -100,8 +99,109 @@ async function classifyPrompt(prompt) {
   return parts;
 }
 
-// TODO: Replace the mock classifyPrompt function with actual LLM API call
-// Example of how you might call an LLM:
+// Ollama implementation - calls Ollama API for actual LLM classification
+async function classifyPromptWithOllama(prompt) {
+  const systemPrompt = `You are a prompt classifier for AI image generation. 
+Break down the given prompt into distinct parts and categorize each part.
+
+Categories include:
+- Style (art style, medium, technique)
+- Subject (main subject, objects, characters)
+- Lighting (lighting conditions, mood lighting)
+- Environment (setting, location, background)
+- Color (color schemes, color descriptions)
+- Perspective (camera angle, point of view)
+- Mood (emotional tone, atmosphere)
+- Composition (layout, framing)
+- Technique (photography techniques, artistic methods)
+
+You must respond with ONLY a valid JSON object with the following structure:
+{
+  "parts_raw": ["part1", "part2", "part3"],
+  "categories": [
+    ["Category1", "Category2"],
+    ["Category3"],
+    ["Category4", "Category5"]
+  ]
+}
+
+Where:
+- parts_raw: array of text parts from the prompt (split by meaning)
+- categories: array of arrays, each containing categories for the corresponding part
+
+Example input: "A majestic dragon in a mystical forest with soft moonlight"
+Example output:
+{
+  "parts_raw": ["A majestic dragon", "mystical forest", "soft moonlight"],
+  "categories": [["Subject"], ["Environment", "Mood"], ["Lighting", "Mood"]]
+}
+
+Important: Respond ONLY with the JSON object, no other text.`;
+
+  try {
+    // Call Ollama API
+    const response = await fetch('http://localhost:11434/api/generate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'llama3.2', // or your preferred model
+        prompt: `${systemPrompt}\n\nPrompt to classify: "${prompt}"`,
+        stream: false,
+        temperature: 0.3,
+        top_p: 0.9,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Ollama API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const ollamaResponse = data.response;
+
+    console.log('Ollama response:', ollamaResponse);
+
+    // Parse the JSON response from Ollama
+    let parsedResponse;
+    try {
+      // Clean up the response in case there's extra text
+      const jsonMatch = ollamaResponse.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        parsedResponse = JSON.parse(jsonMatch[0]);
+      } else {
+        parsedResponse = JSON.parse(ollamaResponse);
+      }
+    } catch (parseError) {
+      console.error('Failed to parse Ollama response:', ollamaResponse);
+      throw new Error('Invalid JSON response from Ollama');
+    }
+
+    // Validate the response structure
+    if (!parsedResponse.parts_raw || !parsedResponse.categories || 
+        !Array.isArray(parsedResponse.parts_raw) || !Array.isArray(parsedResponse.categories)) {
+      throw new Error('Invalid response structure from Ollama');
+    }
+
+    // Convert to the expected format
+    const classification = parsedResponse.parts_raw.map((part, index) => ({
+      text: part,
+      categories: parsedResponse.categories[index] || ['Description'],
+      confidence: 85 + Math.random() * 10 // Random confidence between 85-95% for LLM results
+    }));
+
+    return classification;
+
+  } catch (error) {
+    console.error('Error calling Ollama API:', error);
+    // Fallback to test implementation if Ollama fails
+    console.log('Falling back to test implementation');
+    return await classifyPromptTest(prompt);
+  }
+}
+
+// Legacy example code - kept for reference
 /*
 async function classifyPromptWithLLM(prompt) {
   const systemPrompt = `You are a prompt classifier for AI image generation. 

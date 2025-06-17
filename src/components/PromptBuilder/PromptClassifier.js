@@ -23,7 +23,7 @@ export default function PromptClassifier() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt: prompt, useOllama: true }),
       });
 
       if (!response.ok) {
