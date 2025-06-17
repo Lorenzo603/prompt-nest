@@ -117,23 +117,19 @@ Categories include:
 
 You must respond with ONLY a valid JSON object with the following structure:
 {
-  "parts_raw": ["part1", "part2", "part3"],
-  "categories": [
-    ["Category1", "Category2"],
-    ["Category3"],
-    ["Category4", "Category5"]
-  ]
+  "part text 1": ["Category1", "Category2"],
+  "part text 2": ["Category3"],
+  "part text 3": ["Category4", "Category5"]
 }
 
-Where:
-- parts_raw: array of text parts from the prompt (split by meaning)
-- categories: array of arrays, each containing categories for the corresponding part
+Where each key is a part of the prompt text, and each value is an array of categories that apply to that part.
 
 Example input: "A majestic dragon in a mystical forest with soft moonlight"
 Example output:
 {
-  "parts_raw": ["A majestic dragon", "mystical forest", "soft moonlight"],
-  "categories": [["Subject"], ["Environment", "Mood"], ["Lighting", "Mood"]]
+  "A majestic dragon": ["Subject"],
+  "mystical forest": ["Environment", "Mood"],
+  "soft moonlight": ["Lighting", "Mood"]
 }
 
 Important: Respond ONLY with the JSON object, no other text.`;
@@ -173,23 +169,25 @@ Important: Respond ONLY with the JSON object, no other text.`;
       } else {
         parsedResponse = JSON.parse(ollamaResponse);
       }
+      console.log('Parsed Ollama response:', parsedResponse);
     } catch (parseError) {
       console.error('Failed to parse Ollama response:', ollamaResponse);
       throw new Error('Invalid JSON response from Ollama');
     }
 
     // Validate the response structure
-    if (!parsedResponse.parts_raw || !parsedResponse.categories || 
-        !Array.isArray(parsedResponse.parts_raw) || !Array.isArray(parsedResponse.categories)) {
+    if (!parsedResponse || typeof parsedResponse !== 'object') {
       throw new Error('Invalid response structure from Ollama');
     }
 
-    // Convert to the expected format
-    const classification = parsedResponse.parts_raw.map((part, index) => ({
-      text: part,
-      categories: parsedResponse.categories[index] || ['Description'],
+    // Convert the new key-value structure to the expected format
+    const classification = Object.entries(parsedResponse).map(([text, categories], index) => ({
+      text: text,
+      categories: Array.isArray(categories) ? categories : ['Description'],
       confidence: 85 + Math.random() * 10 // Random confidence between 85-95% for LLM results
     }));
+
+    console.log('Converted classification:', classification);
 
     return classification;
 
