@@ -24,7 +24,7 @@ export default function PromptClassifier() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: prompt, useOllama: false }),
+        body: JSON.stringify({ prompt: prompt, useOllama: true }),
       });
 
       if (!response.ok) {
@@ -176,7 +176,7 @@ export default function PromptClassifier() {
                     <div className="flex items-center gap-2">
                       <span className="flex items-center gap-1">
                         <span className="text-xs text-gray-500">Confidence:</span>
-                        <span className="text-xs text-gray-600 font-medium">{item.confidence}%</span>
+                        <span className="text-xs text-gray-600 font-medium">{Math.round(item.confidence)}%</span>
                       </span>
                       <div className="flex-1 bg-gray-200 rounded-full h-2">
                         <div
