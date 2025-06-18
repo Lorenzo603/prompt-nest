@@ -24,16 +24,6 @@ export default function PromptBuilderPage() {
 }
 
 
-// Classifier section:
-// input: prompt
-// output: classification of each part of the prompt
-// --> calls llama3.2 running via reverse tunnel
-
-// Builder section:
-// input: input form for each category, with suggestions for each category
-// output: prompt
-
-
 
 // //--- USEFUL PROMPTS ----//
 // Inpainting object removal: empty, blur, soft, background

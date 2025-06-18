@@ -5,7 +5,7 @@ import React, { useState, useRef, useEffect } from "react";
 export default function PromptBuilder() {
   const [categoryValues, setCategoryValues] = useState({});
   const [categoryOrder, setCategoryOrder] = useState([
-    'subject', 'style', 'lighting', 'environment', 'color', 
+    'style', 'subject', 'lighting', 'environment', 'color', 
     'perspective', 'background', 'mood', 'composition', 'technique'
   ]);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -28,17 +28,33 @@ export default function PromptBuilder() {
     return colors[category.toLowerCase()] || 'bg-slate-100 text-slate-800 border-slate-200';
   };
 
+  const getCategoryPlaceholder = (category) => {
+    const placeholders = {
+      'style': 'photo, painting, pixel art...',
+      'subject': 'person, animal, landscape...',
+      'lighting': 'soft, ambient, ring light, neon, sun rays...',
+      'environment': 'indoor, outdoor, underwater, in space...',
+      'color': 'vibrant, dark, pastel...',
+      'perspective': 'front, overhead, side...',
+      'background': 'solid color, nebula, forest...',
+      'mood': 'serene, dramatic, intense...',
+      'composition': 'symmetrical, diagonal, rule of thirds...',
+      'technique': 'shallow depth of field, long exposure, HDR...',
+    };
+    return placeholders[category.toLowerCase()] || 'bg-slate-100 text-slate-800 border-slate-200';
+  };
+
   const getCategorySuggestions = (category) => {
     const suggestions = {
-      'subject': [
-        'beautiful woman', 'handsome man', 'cute child', 'majestic dragon', 'fluffy cat',
-        'loyal dog', 'ancient tree', 'blooming flower', 'modern building', 'vintage car',
-        'mystical creature', 'elegant dancer', 'wise elder', 'playful kitten', 'noble horse'
-      ],
       'style': [
         'photorealistic', 'digital art', 'oil painting', 'watercolor', 'pencil sketch',
         'cartoon style', 'anime style', '3D render', 'pixel art', 'impressionist',
         'renaissance style', 'art nouveau', 'cyberpunk', 'steampunk', 'minimalist'
+      ],
+      'subject': [
+        'beautiful woman', 'handsome man', 'cute child', 'majestic dragon', 'fluffy cat',
+        'loyal dog', 'ancient tree', 'blooming flower', 'modern building', 'vintage car',
+        'mystical creature', 'elegant dancer', 'wise elder', 'playful kitten', 'noble horse'
       ],
       'lighting': [
         'soft natural light', 'dramatic lighting', 'golden hour', 'blue hour', 'candlelight',
@@ -269,13 +285,13 @@ export default function PromptBuilder() {
                 onFocus={() => handleInputFocus(category)}
                 onBlur={() => handleInputBlur(category)}
                 onKeyDown={(e) => handleKeyDown(e, category)}
-                placeholder={`Enter ${category} description...`}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder={getCategoryPlaceholder(category)}
+                className="w-full p-3 border border-gray-300 text-slate-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               
               {/* Suggestions Dropdown */}
               {showSuggestions[category] && (
-                <div className="absolute top-full left-0 right-0 z-10 bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-64 overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 z-10 bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-64 overflow-y-auto text-slate-800">
                   {getFilteredSuggestions(category).map((suggestion, index) => (
                     <button
                       key={suggestion}
