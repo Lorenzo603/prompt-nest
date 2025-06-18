@@ -200,6 +200,8 @@ class TypesenseManager:
 if __name__ == "__main__":
     manager = TypesenseManager()
     
+    # # COLLECTION OPERATIONS
+    
     # manager.create_collection_prompts()
     # manager.create_collection_checkpoints()
     # manager.create_collection_loras()
@@ -207,26 +209,28 @@ if __name__ == "__main__":
     # manager.update_collection('promptnest_checkpoints')
     # manager.update_collection('promptnest_loras')
     
+    # manager.delete_collection('promptnest_prompts')
+    # manager.delete_collection('promptnest_checkpoints')
+    # manager.delete_collection('promptnest_loras')
+    
+    # manager.nullify_upload_dates('promptnest_loras')
+    # manager.nullify_upload_dates('promptnest_checkpoints')
     # manager.nullify_upload_dates('promptnest_loras')
 
-    # manager.delete_collection()
+    
+    # # SEARCH OPERATIONS
     # manager.search_documents('promptnest_checkpoints')
     # manager.search_documents('promptnest_loras')
     
     
-    # Nullify uploadDate for all documents in collections
-    # manager.nullify_upload_dates('promptnest_checkpoints')
-    # manager.nullify_upload_dates('promptnest_loras')
-    
+    # # API OPERATIONS
     # manager.create_api_key()
     # manager.list_api_keys()
     # manager.retrieve_api_key()
     # manager.delete_api_key(2)
     
-    # manager.delete_collection('promptnest_prompts')
-    # manager.delete_collection('promptnest_checkpoints')
-    # manager.delete_collection('promptnest_loras')
     
+    # # INDEX OPERATIONS
     # manager.delete_all_documents('promptnest_prompts')
     # manager.delete_all_documents('promptnest_checkpoints')
     # manager.delete_all_documents('promptnest_loras')
