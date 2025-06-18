@@ -6,6 +6,12 @@ import Image from "next/image";
 
 const links = [
 	{
+		href: "/prompt-builder",
+		icon: "/file.svg",
+		label: "Prompt Builder",
+		alt: "Prompts Icon",
+	},
+	{
 		href: "/prompts",
 		icon: "/file.svg",
 		label: "Prompts",
