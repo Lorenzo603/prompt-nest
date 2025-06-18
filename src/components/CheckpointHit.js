@@ -45,7 +45,7 @@ const CheckpointHit = ({ hit, onCheckpointUpdated }) => {
               <Highlight hit={hit} attribute="name" />
             </span>
             {hit.version && (
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 text-sm font-bold rounded uppercase">
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 text-sm font-bold rounded">
                 {hit.version}
               </span>
             )}
