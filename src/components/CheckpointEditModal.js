@@ -4,6 +4,17 @@ import React, { useState } from "react";
 import TagInput from "./TagInput";
 
 const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
+    const formatDateForInput = (dateString) => {
+        if (!dateString) return "";
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return "";
+            return date.toISOString().split('T')[0]; // YYYY-MM-DD format
+        } catch (error) {
+            return "";
+        }
+    };
+
     const [name, setName] = useState(checkpoint.name || "");
     const [description, setDescription] = useState(checkpoint.description || "");
     const [tags, setTags] = useState(checkpoint.tags || []);
@@ -13,14 +24,41 @@ const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
     const [relatedModels, setRelatedModels] = useState(checkpoint.relatedModels ? checkpoint.relatedModels.join(", ") : "");
     const [settings, setSettings] = useState(checkpoint.settings || "");
     const [version, setVersion] = useState(checkpoint.version || "");
-    const [publishedDate, setPublishedDate] = useState(checkpoint.publishedDate || "");
+    const [publishedDate, setPublishedDate] = useState(formatDateForInput(checkpoint.publishedDate));
     const [hash, setHash] = useState(checkpoint.hash || "");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    const validateDateFormat = (dateString) => {
+        if (!dateString) return true; // Empty date is valid
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!dateRegex.test(dateString)) {
+            return false;
+        }
+        // Additional check to ensure it's a valid date
+        const date = new Date(dateString);
+        return date instanceof Date && !isNaN(date) && dateString === date.toISOString().split('T')[0];
+    };
+
+    const handlePublishedDateChange = (e) => {
+        const value = e.target.value;
+        setPublishedDate(value);
+        
+        if (value && !validateDateFormat(value)) {
+            setError("Published Date must be in YYYY-MM-DD format (e.g., 2024-12-25)");
+        } else if (error && error.includes("Published Date")) {
+            setError(null);
+        }
+    };
+
     const handleSave = async () => {
         if (!name.trim()) {
             setError("Checkpoint name cannot be empty.");
+            return;
+        }
+        
+        if (publishedDate && !validateDateFormat(publishedDate)) {
+            setError("Published Date must be in YYYY-MM-DD format (e.g., 2024-12-25)");
             return;
         }
         
@@ -143,9 +181,9 @@ const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
                                 className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-400 text-gray-800 bg-gray-50"
                             />
                                 <input
-                                type="text"
+                                type="date"
                                 value={publishedDate}
-                                onChange={(e) => setPublishedDate(e.target.value)}
+                                onChange={handlePublishedDateChange}
                                 placeholder="Published Date (YYYY-MM-DD)"
                                 className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-400 text-gray-800 bg-gray-50"
                             />
