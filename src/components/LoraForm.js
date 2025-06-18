@@ -53,6 +53,7 @@ const LoraForm = ({ onLoraAdded }) => {
             setFilename("");
             setTriggerWords("");
             setUrls("");
+            setSettings("");
             setBaseModel(DEFAULT_LORA_BASE_MODEL); // Reset base model to default
             setTags([]);
             setVersion("");
