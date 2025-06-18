@@ -2,7 +2,7 @@
 
 import React, { useRef } from "react";
 import CheckpointForm from "../../components/CheckpointForm";
-import CheckpointSearch from "../../components/CheckpointSearch";
+import CheckpointSearch from "../../components/Search/CheckpointSearch";
 import Sidebar from "@/components/Sidebar";
 
 export default function CheckpointsPage() {

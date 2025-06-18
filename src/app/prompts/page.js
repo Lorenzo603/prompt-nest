@@ -2,7 +2,7 @@
 
 import React, { useRef } from "react";
 import PromptForm from "../../components/PromptForm";
-import PromptSearch from "../../components/PromptSearch";
+import PromptSearch from "../../components/Search/PromptSearch";
 import Sidebar from "../../components/Sidebar";
 
 export default function PromptsPage() {

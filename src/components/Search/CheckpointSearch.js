@@ -9,8 +9,8 @@ import {
   useInstantSearch,
   useStats,
 } from "react-instantsearch";
-import CheckpointHit from "./CheckpointHit";
-import TagFilter from "./TagFilter";
+import CheckpointHit from "../CheckpointHit";
+import TagFilter from "../TagFilter";
 import CustomSearchBox from "./CustomSearchBox";
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({

@@ -2,7 +2,7 @@
 
 import React, { useRef } from "react";
 import LoraForm from "../../components/LoraForm";
-import LoraSearch from "../../components/LoraSearch";
+import LoraSearch from "../../components/Search/LoraSearch";
 import Sidebar from "@/components/Sidebar";
 
 export default function LorasPage() {

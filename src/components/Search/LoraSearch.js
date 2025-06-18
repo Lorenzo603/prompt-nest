@@ -9,8 +9,8 @@ import {
   useInstantSearch,
   useStats,
 } from "react-instantsearch";
-import LoraHit from "./LoraHit";
-import TagFilter from "./TagFilter";
+import LoraHit from "../LoraHit";
+import TagFilter from "../TagFilter";
 import CustomSearchBox from "./CustomSearchBox";
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({

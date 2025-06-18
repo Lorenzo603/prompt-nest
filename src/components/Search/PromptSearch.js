@@ -9,8 +9,8 @@ import {
   useInstantSearch,
   useStats,
 } from "react-instantsearch";
-import PromptHit from "./PromptHit";
-import TagFilter from "./TagFilter";
+import PromptHit from "../PromptHit";
+import TagFilter from "../TagFilter";
 import CustomSearchBox from "./CustomSearchBox";
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
