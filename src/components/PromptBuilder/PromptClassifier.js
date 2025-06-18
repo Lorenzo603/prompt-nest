@@ -2,12 +2,23 @@
 
 import React, { useState } from "react";
 
-export default function PromptClassifier() {
+export default function PromptClassifier({ onCategoryClick }) {
   const [prompt, setPrompt] = useState('');
   const [classification, setClassification] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sortBy, setSortBy] = useState('original'); // 'original', 'category', 'confidence'
+  const [clickedCategory, setClickedCategory] = useState(null);
+
+  const handleCategoryClick = (category, text) => {
+    if (onCategoryClick) {
+      onCategoryClick(category, text);
+      
+      // Provide visual feedback
+      setClickedCategory(`${category}-${text}`);
+      setTimeout(() => setClickedCategory(null), 1500);
+    }
+  };
 
   const handleClassify = async () => {
     if (!prompt.trim()) {
@@ -159,14 +170,34 @@ export default function PromptClassifier() {
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium text-gray-600 uppercase tracking-wide">Categories:</h4>
                   <div className="flex flex-wrap gap-2">
-                    {item.categories.map((category, catIndex) => (
-                      <span
-                        key={catIndex}
-                        className={`px-3 py-1 rounded-full text-xs font-medium border ${getCategoryColor(category)}`}
-                      >
-                        {category}
-                      </span>
-                    ))}
+                    {item.categories.map((category, catIndex) => {
+                      const categoryKey = `${category}-${item.text}`;
+                      const isClicked = clickedCategory === categoryKey;
+                      
+                      return (
+                        <button
+                          key={catIndex}
+                          onClick={() => handleCategoryClick(category, item.text)}
+                          className={`px-3 py-1 rounded-full text-xs font-medium border transition-all duration-200 hover:shadow-md hover:scale-105 cursor-pointer ${
+                            isClicked 
+                              ? 'bg-green-100 text-green-800 border-green-200 ring-2 ring-green-300' 
+                              : getCategoryColor(category)
+                          }`}
+                          title={`Click to add "${item.text}" to ${category} category in Prompt Builder`}
+                        >
+                          {isClicked ? (
+                            <span className="flex items-center gap-1">
+                              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z" />
+                              </svg>
+                              {category}
+                            </span>
+                          ) : (
+                            category
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -217,10 +248,13 @@ export default function PromptClassifier() {
       {/* Help Text */}
       <div className="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg">
         <h3 className="text-sm font-semibold text-gray-700 mb-2">How it works:</h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 mb-2">
           The classifier analyzes your prompt and breaks it down into meaningful parts, then categorizes each part
           (e.g., style, subject, lighting, environment). This helps you understand the structure of your prompt
           and identify areas for improvement or expansion.
+        </p>
+        <p className="text-sm text-blue-600 font-medium">
+          💡 Tip: Click on any category badge to automatically add that text to the corresponding category in the Prompt Builder!
         </p>
       </div>
     </div>

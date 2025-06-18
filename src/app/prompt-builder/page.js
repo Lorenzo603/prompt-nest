@@ -6,16 +6,24 @@ import PromptClassifier from "@/components/PromptBuilder/PromptClassifier";
 import PromptBuilder from "@/components/PromptBuilder/PromptBuilder";
 
 export default function PromptBuilderPage() {
+  const promptBuilderRef = useRef();
+
+  const handleCategoryClick = (category, text) => {
+    if (promptBuilderRef.current) {
+      promptBuilderRef.current.appendToCategory(category, text);
+    }
+  };
+
   return (
     <div className="flex">
       <Sidebar />
       <main className="flex-1 ml-16 md:ml-48 transition-all duration-300">
         <div className="flex flex-row gap-6 p-4">
           <section className="flex-1">
-            <PromptClassifier />
+            <PromptClassifier onCategoryClick={handleCategoryClick} />
           </section>
           <section className="flex-1">
-            <PromptBuilder />
+            <PromptBuilder ref={promptBuilderRef} />
           </section>
         </div>
       </main>

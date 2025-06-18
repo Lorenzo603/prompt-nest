@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useImperativeHandle, forwardRef } from "react";
 
-export default function PromptBuilder() {
+const PromptBuilder = forwardRef((props, ref) => {
   const [categoryValues, setCategoryValues] = useState({});
   const [categoryOrder, setCategoryOrder] = useState([
     'style', 'subject', 'lighting', 'environment', 'color', 
@@ -11,6 +11,23 @@ export default function PromptBuilder() {
   const [draggedItem, setDraggedItem] = useState(null);
   const [showSuggestions, setShowSuggestions] = useState({});
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState({});
+
+  // Expose appendToCategory function to parent via ref
+  useImperativeHandle(ref, () => ({
+    appendToCategory: (category, text) => {
+      setCategoryValues(prev => {
+        const currentValue = prev[category] || '';
+        const newValue = currentValue 
+          ? `${currentValue}, ${text}`
+          : text;
+        console.log(`CurrentValue: ${currentValue} -- New value for ${category}: ${newValue}`);
+        return {
+          ...prev,
+          [category.toLowerCase()]: newValue
+        };
+      });
+    }
+  }), []);
 
   const getCategoryColor = (category) => {
     const colors = {
@@ -364,4 +381,8 @@ export default function PromptBuilder() {
       </div>
     </div>
   );
-}
+});
+
+PromptBuilder.displayName = 'PromptBuilder';
+
+export default PromptBuilder;
