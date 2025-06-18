@@ -9,6 +9,15 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
@@ -123,7 +132,7 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
 
         {hit.publishedDate && (
           <div className="text-sm text-gray-600">
-            <span className="font-medium">Published Date:</span> {new Date(hit.publishedDate).toLocaleDateString()}
+            <span className="font-medium">Published Date:</span> {formatDate(hit.publishedDate)}
           </div>
         )}
         
