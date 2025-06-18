@@ -136,13 +136,13 @@ Important: Respond ONLY with the JSON object, no other text.`;
 
   try {
     // Call Ollama API
-    const response = await fetch('http://localhost:11434/api/generate', {
+    const response = await fetch(`${process.env.OLLAMA_URL}/api/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'llama3.2', // or your preferred model
+        model: process.env.OLLAMA_MODEL || 'llama3.2',
         prompt: `${systemPrompt}\n\nPrompt to classify: "${prompt}"`,
         stream: false,
         temperature: 0.3,

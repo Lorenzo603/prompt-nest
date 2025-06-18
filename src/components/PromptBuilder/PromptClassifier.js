@@ -92,7 +92,7 @@ export default function PromptClassifier() {
         <div className="flex gap-3">
           <textarea
             id="prompt-input"
-            value={prompt}
+            value={prompt || 'A majestic dragon in a mystical forest with soft moonlight filtering through ancient trees'}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter your prompt here... (e.g., 'A majestic dragon in a mystical forest with soft moonlight filtering through ancient trees')"
             className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
