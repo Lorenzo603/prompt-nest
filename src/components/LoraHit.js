@@ -8,6 +8,7 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [copiedTriggerWords, setCopiedTriggerWords] = useState({});
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -39,6 +40,20 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
       alert('Failed to delete lora. Please try again.');
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const copyTriggerWord = async (word, index) => {
+    try {
+      await navigator.clipboard.writeText(word);
+      setCopiedTriggerWords(prev => ({ ...prev, [index]: true }));
+      
+      // Hide tooltip after 2 seconds
+      setTimeout(() => {
+        setCopiedTriggerWords(prev => ({ ...prev, [index]: false }));
+      }, 2000);
+    } catch (error) {
+      console.error('Failed to copy trigger word:', error);
     }
   };
 
@@ -97,9 +112,22 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
           <div className="flex gap-2 flex-wrap">
             <span className="text-sm font-medium text-gray-700">Trigger words:</span>
             {hit.triggerWords.map((word, index) => (
-              <span key={index} className="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full">
-                <Highlight hit={hit} attribute={`triggerWords.${index}`} />
-              </span>
+              <div key={index} className="relative">
+                <button
+                  onClick={() => copyTriggerWord(word, index)}
+                  className="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full hover:bg-yellow-200 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
+                >
+                  <Highlight hit={hit} attribute={`triggerWords.${index}`} />
+                </button>
+                
+                {/* Tooltip */}
+                {copiedTriggerWords[index] && (
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-xs rounded shadow-lg z-10 whitespace-nowrap">
+                    Copied!
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         )}
