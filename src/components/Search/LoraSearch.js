@@ -10,6 +10,7 @@ import {
 } from "react-instantsearch";
 import LoraHit from "../LoraHit";
 import TagFilter from "../TagFilter";
+import BaseModelFilter from "../BaseModelFilter";
 import CustomSearchBox from "./CustomSearchBox";
 import ResultsCount from "./ResultsCount";
 
@@ -75,6 +76,12 @@ const LoraSearch = forwardRef(({ onLoraUpdated }, ref) => {
             colorTheme="purple"
             placeholder="Filter by tags (comma separated, e.g., anime, portrait)"
           />
+          <div className="mt-3">
+            <BaseModelFilter 
+              colorTheme="purple"
+              placeholder="Filter by base model (comma separated, e.g., SDXL, SD1.5)"
+            />
+          </div>
         </div>
         
         <ResultsCount colorTheme="purple" />
