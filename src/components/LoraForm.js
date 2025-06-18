@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import TagInput from "./TagInput";
 
-const DEFAULT_LORA_BASE_MODEL = "SDXL"; // Default base model for the lora
+const DEFAULT_LORA_BASE_MODEL = "SDXL 1.0"; // Default base model for the lora
 
 const LoraForm = ({ onLoraAdded }) => {
     const [loraName, setLoraName] = useState("");
@@ -78,9 +78,9 @@ const LoraForm = ({ onLoraAdded }) => {
                                 className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50 sm:w-40"
                             >
                                 <option value="SD1.5">SD1.5</option>
-                                <option value="SDXL">SDXL</option>
+                                <option value="SDXL 1.0">SDXL 1.0</option>
                                 <option value="SD2.1">SD2.1</option>
-                                <option value="Flux">Flux</option>
+                                <option value="Flux.1 D">Flux.1 D</option>
                                 <option value="Other">Other</option>
                             </select>
                             <input
