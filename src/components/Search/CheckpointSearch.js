@@ -7,11 +7,11 @@ import {
   Hits,
   Configure,
   useInstantSearch,
-  useStats,
 } from "react-instantsearch";
 import CheckpointHit from "../CheckpointHit";
 import TagFilter from "../TagFilter";
 import CustomSearchBox from "./CustomSearchBox";
+import ResultsCount from "./ResultsCount";
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: {
@@ -49,35 +49,6 @@ const SearchController = forwardRef((props, ref) => {
 
 SearchController.displayName = "SearchController";
 
-// Component to display search results count
-const ResultsCount = () => {
-  const { nbHits, processingTimeMS, query } = useStats();
-  
-  return (
-    <div className="flex items-center justify-between text-sm text-gray-200 mb-4">
-      <div>
-        {nbHits > 0 ? (
-          <>
-            <span className="font-medium text-green-400">{nbHits.toLocaleString()}</span>
-            <span> result{nbHits !== 1 ? 's' : ''}</span>
-            {query && (
-              <>
-                <span> for </span>
-                <span className="font-medium">"{query}"</span>
-              </>
-            )}
-          </>
-        ) : (
-          <span>No results found{query && ` for "${query}"`}</span>
-        )}
-      </div>
-      <div className="text-gray-500">
-        {processingTimeMS}ms
-      </div>
-    </div>
-  );
-};
-
 const CheckpointSearch = forwardRef(({ onCheckpointUpdated }, ref) => {
   return (
     <div className="flex flex-col gap-2 mt-4">
@@ -106,7 +77,7 @@ const CheckpointSearch = forwardRef(({ onCheckpointUpdated }, ref) => {
           />
         </div>
         
-        <ResultsCount />
+        <ResultsCount colorTheme="green" />
         
         <Configure hitsPerPage={20} />
         <Hits 
