@@ -374,7 +374,7 @@ const PromptBuilder = forwardRef((props, ref) => {
             }
           }
           .rainbow-border {
-            animation: rainbow 3s ease-in-out infinite;
+            animation: rainbow 30s infinite;
           }
         `
       }} />
@@ -531,7 +531,7 @@ const PromptBuilder = forwardRef((props, ref) => {
           )}
         </div>
         <div className="relative">
-          <div className="bg-white border-2 rounded-lg p-4 min-h-[100px] relative overflow-hidden">
+          <div className="bg-white border-1 rounded-lg p-4 min-h-[100px] relative overflow-hidden">
             {/* Rainbow border animation */}
             {generatePrompt() && (
               <div 
