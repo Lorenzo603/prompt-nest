@@ -11,6 +11,8 @@ const PromptBuilder = forwardRef((props, ref) => {
   const [draggedItem, setDraggedItem] = useState(null);
   const [showSuggestions, setShowSuggestions] = useState({});
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState({});
+  const [showCopiedTooltip, setShowCopiedTooltip] = useState(false);
+  const [showCheckmark, setShowCheckmark] = useState(false);
 
   // Expose appendToCategory function to parent via ref
   useImperativeHandle(ref, () => ({
@@ -479,18 +481,38 @@ const PromptBuilder = forwardRef((props, ref) => {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-gray-800">Generated Prompt</h2>
           {generatePrompt() && (
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(generatePrompt());
-                // Optional: Add toast notification or visual feedback here
-              }}
-              className="px-3 py-1.5 text-black rounded-md hover:bg-blue-700 hover:text-slate-200 transition-colors duration-200 text-sm font-medium flex items-center gap-2 cursor-pointer"
-              title="Copy prompt to clipboard"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A1,1 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z" />
-              </svg>
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(generatePrompt());
+                  setShowCheckmark(true);
+                  setShowCopiedTooltip(true);
+                  setTimeout(() => {
+                    setShowCheckmark(false);
+                    setShowCopiedTooltip(false);
+                  }, 2000);
+                }}
+                className="px-3 py-1.5 text-black rounded-md hover:bg-blue-700 hover:text-slate-200 transition-colors duration-200 text-sm font-medium flex items-center gap-2 cursor-pointer"
+                title="Copy prompt to clipboard"
+              >
+                {showCheckmark ? (
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A1,1 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z" />
+                  </svg>
+                )}
+                Copy
+              </button>
+              {showCopiedTooltip && (
+                <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black text-white px-2 py-1 rounded text-xs font-medium whitespace-nowrap z-10">
+                  Copied!
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-black"></div>
+                </div>
+              )}
+            </div>
           )}
         </div>
         <div className="bg-white border border-gray-200 rounded-lg p-4 min-h-[100px]">
