@@ -476,7 +476,23 @@ const PromptBuilder = forwardRef((props, ref) => {
 
       {/* Generated Prompt Output */}
       <div className="bg-gray-50 border border-gray-300 rounded-lg p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Generated Prompt</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">Generated Prompt</h2>
+          {generatePrompt() && (
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(generatePrompt());
+                // Optional: Add toast notification or visual feedback here
+              }}
+              className="px-3 py-1.5 text-black rounded-md hover:bg-blue-700 hover:text-slate-200 transition-colors duration-200 text-sm font-medium flex items-center gap-2 cursor-pointer"
+              title="Copy prompt to clipboard"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A1,1 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z" />
+              </svg>
+            </button>
+          )}
+        </div>
         <div className="bg-white border border-gray-200 rounded-lg p-4 min-h-[100px]">
           {generatePrompt() ? (
             <p className="text-gray-700 leading-relaxed">
@@ -489,25 +505,6 @@ const PromptBuilder = forwardRef((props, ref) => {
           )}
         </div>
         
-        {generatePrompt() && (
-          <div className="mt-4 flex gap-3">
-            <button
-              onClick={() => navigator.clipboard.writeText(generatePrompt())}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm"
-            >
-              Copy Prompt
-            </button>
-            <button
-              onClick={() => {
-                const parts = generatePrompt().split(', ');
-                console.log('Prompt parts:', parts);
-              }}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm"
-            >
-              Analyze Parts
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Instructions */}
