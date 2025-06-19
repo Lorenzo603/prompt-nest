@@ -492,7 +492,7 @@ const PromptBuilder = forwardRef((props, ref) => {
                     setShowCopiedTooltip(false);
                   }, 2000);
                 }}
-                className="px-3 py-1.5 text-black rounded-md hover:bg-blue-700 hover:text-slate-200 transition-colors duration-200 text-sm font-medium flex items-center gap-2 cursor-pointer"
+                className="px-3 py-1.5 text-black rounded-md border-1 transition-colors duration-200 text-sm font-medium flex items-center gap-2 cursor-pointer"
                 title="Copy prompt to clipboard"
               >
                 {showCheckmark ? (
