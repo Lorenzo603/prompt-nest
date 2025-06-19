@@ -289,9 +289,18 @@ const PromptBuilder = forwardRef((props, ref) => {
   const generatePrompt = () => {
     const promptParts = categoryOrder
       .map(category => categoryValues[category])
-      .filter(value => value && value.trim() !== '');
+      .filter(value => value && value.trim() !== '')
+      .map(value => {
+        // Split by comma, trim each part, and filter out empty parts
+        return value.split(',')
+          .map(part => part.trim())
+          .filter(part => part !== '')
+          .join(', ');
+      })
+      .filter(value => value !== '') // Remove any categories that became empty after cleaning
+      .join(', ');
     
-    return promptParts.join(', ');
+    return promptParts;
   };
 
   const handleDragStart = (e, category) => {
