@@ -363,6 +363,21 @@ const PromptBuilder = forwardRef((props, ref) => {
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes rainbow {
+            0%, 100% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
+          }
+          .rainbow-border {
+            animation: rainbow 3s ease-in-out infinite;
+          }
+        `
+      }} />
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-slate-100">Prompt Builder</h1>
         <button
@@ -515,16 +530,33 @@ const PromptBuilder = forwardRef((props, ref) => {
             </div>
           )}
         </div>
-        <div className="bg-white border border-gray-200 rounded-lg p-4 min-h-[100px]">
-          {generatePrompt() ? (
-            <p className="text-gray-700 leading-relaxed">
-              {generatePrompt()}
-            </p>
-          ) : (
-            <p className="text-gray-400 italic">
-              Start filling in the categories above to generate your prompt...
-            </p>
-          )}
+        <div className="relative">
+          <div className="bg-white border-2 rounded-lg p-4 min-h-[100px] relative overflow-hidden">
+            {/* Rainbow border animation */}
+            {generatePrompt() && (
+              <div 
+                className="absolute inset-0 rounded-lg rainbow-border"
+                style={{
+                  background: 'linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000)',
+                  backgroundSize: '400% 400%',
+                  padding: '2px'
+                }}
+              >
+                <div className="bg-white rounded-lg w-full h-full"></div>
+              </div>
+            )}
+            <div className="relative z-10">
+              {generatePrompt() ? (
+                <p className="text-gray-700 leading-relaxed">
+                  {generatePrompt()}
+                </p>
+              ) : (
+                <p className="text-gray-400 italic">
+                  Start filling in the categories above to generate your prompt...
+                </p>
+              )}
+            </div>
+          </div>
         </div>
         
       </div>
