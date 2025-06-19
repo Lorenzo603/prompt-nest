@@ -142,6 +142,10 @@ const PromptBuilder = forwardRef((props, ref) => {
         ...prev,
         [category]: false
       }));
+      setActiveSuggestionIndex(prev => ({
+        ...prev,
+        [category]: -1
+      }));
     }, 200);
   };
 
@@ -182,7 +186,13 @@ const PromptBuilder = forwardRef((props, ref) => {
 
   const handleKeyDown = (e, category) => {
     const suggestions = getFilteredSuggestions(category);
-    const currentIndex = activeSuggestionIndex[category] || -1;
+    
+    // Only handle keyboard navigation if suggestions are visible
+    if (!showSuggestions[category] || suggestions.length === 0) {
+      return;
+    }
+    
+    const currentIndex = activeSuggestionIndex[category] ?? -1;
 
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -198,14 +208,23 @@ const PromptBuilder = forwardRef((props, ref) => {
         ...prev,
         [category]: newIndex
       }));
-    } else if (e.key === 'Enter' && currentIndex >= 0) {
+    } else if (e.key === 'Enter' && currentIndex >= 0 && currentIndex < suggestions.length) {
       e.preventDefault();
       const selectedSuggestion = suggestions[currentIndex];
       handleSuggestionClick(category, selectedSuggestion);
+      // Reset the active index after selection
+      setActiveSuggestionIndex(prev => ({
+        ...prev,
+        [category]: -1
+      }));
     } else if (e.key === 'Escape') {
       setShowSuggestions(prev => ({
         ...prev,
         [category]: false
+      }));
+      setActiveSuggestionIndex(prev => ({
+        ...prev,
+        [category]: -1
       }));
     }
   };
@@ -371,8 +390,10 @@ const PromptBuilder = forwardRef((props, ref) => {
                       <button
                         key={suggestion}
                         onClick={() => handleSuggestionClick(category, suggestion)}
-                        className={`w-full text-left px-4 py-2 hover:bg-gray-100 border-b border-gray-100 last:border-b-0 ${
-                          activeSuggestionIndex[category] === index ? 'bg-blue-50 text-blue-700' : ''
+                        className={`w-full text-left px-4 py-2 border-b border-gray-100 last:border-b-0 transition-colors duration-150 ${
+                          activeSuggestionIndex[category] === index 
+                            ? 'bg-blue-100 text-blue-800 font-medium' 
+                            : 'hover:bg-gray-100 text-gray-700'
                         }`}
                         title={`Result: ${previewText}`}
                       >
@@ -439,6 +460,7 @@ const PromptBuilder = forwardRef((props, ref) => {
         <ul className="text-sm text-blue-700 space-y-1">
           <li>• Fill in any categories with your own freeform text</li>
           <li>• Start typing to see suggestions that will be appended to your text</li>
+          <li>• Use ↑/↓ arrow keys to navigate suggestions, Enter to select</li>
           <li>• Separate multiple terms with commas</li>
           <li>• Drag and drop categories to reorder them</li>
           <li>• The generated prompt will update automatically</li>
