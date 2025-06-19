@@ -15,16 +15,34 @@ const PromptBuilder = forwardRef((props, ref) => {
   // Expose appendToCategory function to parent via ref
   useImperativeHandle(ref, () => ({
     appendToCategory: (category, text) => {
+      console.log(`Appending "${text}" to category "${category}"`);
       setCategoryValues(prev => {
-        const currentValue = prev[category] || '';
-        const newValue = currentValue 
-          ? `${currentValue}, ${text}`
-          : text;
-        console.log(`CurrentValue: ${currentValue} -- New value for ${category}: ${newValue}`);
-        return {
+        const currentValue = prev[category.toLowerCase()] || '';
+        console.log(`CurrentValue: "${currentValue}"`);
+        
+        let newValue;
+        if (!currentValue.trim()) {
+          // If empty, use the text and add comma+space for continued typing
+          newValue = `${text}, `;
+        } else {
+          // Check if current value already ends with comma (with or without space)
+          const trimmedValue = currentValue.trimEnd();
+          if (trimmedValue.endsWith(',')) {
+            // Already has comma, add space, text, and comma+space for continued typing
+            newValue = `${trimmedValue} ${text}, `;
+          } else {
+            // No comma at end, add comma+space, text, and comma+space for continued typing
+            newValue = `${trimmedValue}, ${text}, `;
+          }
+        }
+        
+        console.log(`New value for ${category}: "${newValue}"`);
+        const newState = {
           ...prev,
           [category.toLowerCase()]: newValue
         };
+        console.log('New state:', newState);
+        return newState;
       });
     }
   }), []);

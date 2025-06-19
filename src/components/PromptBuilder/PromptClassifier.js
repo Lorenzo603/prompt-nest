@@ -168,7 +168,7 @@ export default function PromptClassifier({ onCategoryClick }) {
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="text-sm font-medium text-gray-600 uppercase tracking-wide">Categories:</h4>
+                  <h4 className="text-sm font-medium text-gray-600 tracking-wide">Categories (click to add to prompt):</h4>
                   <div className="flex flex-wrap gap-2">
                     {item.categories.map((category, catIndex) => {
                       const categoryKey = `${category}-${item.text}`;
