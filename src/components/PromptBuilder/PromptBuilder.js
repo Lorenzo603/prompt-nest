@@ -13,6 +13,7 @@ const PromptBuilder = forwardRef((props, ref) => {
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState({});
   const [showCopiedTooltip, setShowCopiedTooltip] = useState(false);
   const [showCheckmark, setShowCheckmark] = useState(false);
+  const [showClearTooltip, setShowClearTooltip] = useState(false);
 
   // Expose appendToCategory function to parent via ref
   useImperativeHandle(ref, () => ({
@@ -380,12 +381,24 @@ const PromptBuilder = forwardRef((props, ref) => {
       }} />
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-slate-100">Prompt Builder</h1>
-        <button
-          onClick={clearAll}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm"
-        >
-          Clear All
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => {
+              clearAll();
+              setShowClearTooltip(true);
+              setTimeout(() => setShowClearTooltip(false), 2000);
+            }}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm font-medium cursor-pointer"
+          >
+            Clear All
+          </button>
+          {showClearTooltip && (
+            <div className="absolute -left-20 top-1/2 transform -translate-y-1/2 bg-black text-white px-2 py-1 rounded text-xs font-medium whitespace-nowrap z-10">
+              Cleared!
+              <div className="absolute top-1/2 right-0 transform translate-x-full -translate-y-1/2 w-0 h-0 border-t-4 border-b-4 border-l-4 border-t-transparent border-b-transparent border-l-black"></div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Category Inputs */}
