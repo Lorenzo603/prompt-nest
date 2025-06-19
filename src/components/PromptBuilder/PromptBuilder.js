@@ -122,6 +122,18 @@ const PromptBuilder = forwardRef((props, ref) => {
       ...prev,
       [category]: value
     }));
+    
+    // Show suggestions when user is typing, especially after adding content
+    setShowSuggestions(prev => ({
+      ...prev,
+      [category]: true
+    }));
+    
+    // Reset active suggestion index when typing
+    setActiveSuggestionIndex(prev => ({
+      ...prev,
+      [category]: -1
+    }));
   };
 
   const handleInputFocus = (category) => {
@@ -154,10 +166,10 @@ const PromptBuilder = forwardRef((props, ref) => {
       const currentValue = prev[category] || '';
       
       if (!currentValue.trim()) {
-        // If empty, just use the suggestion
+        // If empty, use the suggestion and add comma+space for continued typing
         return {
           ...prev,
-          [category]: suggestion
+          [category]: `${suggestion}, `
         };
       }
       
@@ -166,11 +178,11 @@ const PromptBuilder = forwardRef((props, ref) => {
       let newValue;
       
       if (trimmedValue.endsWith(',')) {
-        // Already has comma, just add space and suggestion
-        newValue = `${trimmedValue} ${suggestion}`;
+        // Already has comma, add space, suggestion, and comma+space for continued typing
+        newValue = `${trimmedValue} ${suggestion}, `;
       } else {
-        // No comma at end, add comma with space and suggestion
-        newValue = `${trimmedValue}, ${suggestion}`;
+        // No comma at end, add comma+space, suggestion, and comma+space for continued typing
+        newValue = `${trimmedValue}, ${suggestion}, `;
       }
       
       return {
@@ -178,9 +190,17 @@ const PromptBuilder = forwardRef((props, ref) => {
         [category]: newValue
       };
     });
+    
+    // Keep suggestions open for continued typing
     setShowSuggestions(prev => ({
       ...prev,
-      [category]: false
+      [category]: true
+    }));
+    
+    // Reset active suggestion index
+    setActiveSuggestionIndex(prev => ({
+      ...prev,
+      [category]: -1
     }));
   };
 
@@ -377,14 +397,23 @@ const PromptBuilder = forwardRef((props, ref) => {
                 <div className="absolute top-full left-0 right-0 z-10 bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-64 overflow-y-auto text-slate-800">
                   {getFilteredSuggestions(category).length > 0 && categoryValues[category] && (
                     <div className="px-4 py-2 text-xs text-gray-500 bg-gray-50 border-b border-gray-200 italic">
-                      Click to append to current text
+                      Click to append and continue typing
                     </div>
                   )}
                   {getFilteredSuggestions(category).map((suggestion, index) => {
                     const currentValue = categoryValues[category] || '';
-                    const previewText = currentValue.trim() 
-                      ? `${currentValue}, ${suggestion}`
-                      : suggestion;
+                    let previewText;
+                    
+                    if (!currentValue.trim()) {
+                      previewText = `${suggestion}, `;
+                    } else {
+                      const trimmedValue = currentValue.trimEnd();
+                      if (trimmedValue.endsWith(',')) {
+                        previewText = `${trimmedValue} ${suggestion}, `;
+                      } else {
+                        previewText = `${trimmedValue}, ${suggestion}, `;
+                      }
+                    }
                     
                     return (
                       <button
@@ -395,7 +424,7 @@ const PromptBuilder = forwardRef((props, ref) => {
                             ? 'bg-blue-100 text-blue-800 font-medium' 
                             : 'hover:bg-gray-100 text-gray-700'
                         }`}
-                        title={`Result: ${previewText}`}
+                        title={`Result: ${previewText.trimEnd()}`}
                       >
                         <div className="flex items-center gap-2">
                           <span>{suggestion}</span>
