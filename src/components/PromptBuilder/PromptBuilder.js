@@ -146,10 +146,34 @@ const PromptBuilder = forwardRef((props, ref) => {
   };
 
   const handleSuggestionClick = (category, suggestion) => {
-    setCategoryValues(prev => ({
-      ...prev,
-      [category]: suggestion
-    }));
+    setCategoryValues(prev => {
+      const currentValue = prev[category] || '';
+      
+      if (!currentValue.trim()) {
+        // If empty, just use the suggestion
+        return {
+          ...prev,
+          [category]: suggestion
+        };
+      }
+      
+      // Check if current value already ends with comma (with or without space)
+      const trimmedValue = currentValue.trimEnd();
+      let newValue;
+      
+      if (trimmedValue.endsWith(',')) {
+        // Already has comma, just add space and suggestion
+        newValue = `${trimmedValue} ${suggestion}`;
+      } else {
+        // No comma at end, add comma with space and suggestion
+        newValue = `${trimmedValue}, ${suggestion}`;
+      }
+      
+      return {
+        ...prev,
+        [category]: newValue
+      };
+    });
     setShowSuggestions(prev => ({
       ...prev,
       [category]: false
@@ -176,7 +200,8 @@ const PromptBuilder = forwardRef((props, ref) => {
       }));
     } else if (e.key === 'Enter' && currentIndex >= 0) {
       e.preventDefault();
-      handleSuggestionClick(category, suggestions[currentIndex]);
+      const selectedSuggestion = suggestions[currentIndex];
+      handleSuggestionClick(category, selectedSuggestion);
     } else if (e.key === 'Escape') {
       setShowSuggestions(prev => ({
         ...prev,
@@ -193,10 +218,32 @@ const PromptBuilder = forwardRef((props, ref) => {
       return allSuggestions.slice(0, 8); // Show first 8 when empty
     }
     
+    // Split current value by commas to get individual terms
+    const existingTerms = currentValue.split(',').map(term => term.trim().toLowerCase());
+    
+    // Get the last term being typed (after the last comma)
+    const lastCommaIndex = currentValue.lastIndexOf(',');
+    const currentTerm = lastCommaIndex >= 0 
+      ? currentValue.substring(lastCommaIndex + 1).trim()
+      : currentValue.trim();
+    
     return allSuggestions
-      .filter(suggestion => 
-        suggestion.toLowerCase().includes(currentValue.toLowerCase())
-      )
+      .filter(suggestion => {
+        // Don't show suggestions that are already in the current value
+        const suggestionLower = suggestion.toLowerCase();
+        const alreadyExists = existingTerms.some(term => 
+          term === suggestionLower || term.includes(suggestionLower)
+        );
+        
+        if (alreadyExists) return false;
+        
+        // If there's a current term being typed, filter by that
+        if (currentTerm) {
+          return suggestionLower.includes(currentTerm.toLowerCase());
+        }
+        
+        return true;
+      })
       .slice(0, 8); // Limit to 8 suggestions
   };
 
@@ -309,17 +356,35 @@ const PromptBuilder = forwardRef((props, ref) => {
               {/* Suggestions Dropdown */}
               {showSuggestions[category] && (
                 <div className="absolute top-full left-0 right-0 z-10 bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-64 overflow-y-auto text-slate-800">
-                  {getFilteredSuggestions(category).map((suggestion, index) => (
-                    <button
-                      key={suggestion}
-                      onClick={() => handleSuggestionClick(category, suggestion)}
-                      className={`w-full text-left px-4 py-2 hover:bg-gray-100 border-b border-gray-100 last:border-b-0 ${
-                        activeSuggestionIndex[category] === index ? 'bg-blue-50 text-blue-700' : ''
-                      }`}
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
+                  {getFilteredSuggestions(category).length > 0 && categoryValues[category] && (
+                    <div className="px-4 py-2 text-xs text-gray-500 bg-gray-50 border-b border-gray-200 italic">
+                      Click to append to current text
+                    </div>
+                  )}
+                  {getFilteredSuggestions(category).map((suggestion, index) => {
+                    const currentValue = categoryValues[category] || '';
+                    const previewText = currentValue.trim() 
+                      ? `${currentValue}, ${suggestion}`
+                      : suggestion;
+                    
+                    return (
+                      <button
+                        key={suggestion}
+                        onClick={() => handleSuggestionClick(category, suggestion)}
+                        className={`w-full text-left px-4 py-2 hover:bg-gray-100 border-b border-gray-100 last:border-b-0 ${
+                          activeSuggestionIndex[category] === index ? 'bg-blue-50 text-blue-700' : ''
+                        }`}
+                        title={`Result: ${previewText}`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span>{suggestion}</span>
+                          {currentValue.trim() && (
+                            <span className="text-xs text-gray-400">+</span>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
                   {getFilteredSuggestions(category).length === 0 && (
                     <div className="px-4 py-2 text-gray-500 italic">
                       No suggestions found
@@ -372,8 +437,9 @@ const PromptBuilder = forwardRef((props, ref) => {
       <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <h3 className="text-sm font-semibold text-blue-800 mb-2">How to use:</h3>
         <ul className="text-sm text-blue-700 space-y-1">
-          <li>• Fill in any categories you want to include in your prompt</li>
-          <li>• Start typing to see suggestions, or enter your own text</li>
+          <li>• Fill in any categories with your own freeform text</li>
+          <li>• Start typing to see suggestions that will be appended to your text</li>
+          <li>• Separate multiple terms with commas</li>
           <li>• Drag and drop categories to reorder them</li>
           <li>• The generated prompt will update automatically</li>
           <li>• Use the copy button to copy the final prompt</li>
