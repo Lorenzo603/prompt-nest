@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 
 const TagInput = ({ value = [], onChange, placeholder = "Add tags...", className = "", ringColor = "purple" }) => {
   const [inputValue, setInputValue] = useState("");
@@ -11,7 +11,7 @@ const TagInput = ({ value = [], onChange, placeholder = "Add tags...", className
   const suggestionsRef = useRef(null);
 
   // Fetch tag suggestions
-  const fetchSuggestions = async (query) => {
+  const fetchSuggestions = useCallback(async (query) => {
     if (!query.trim()) {
       setSuggestions([]);
       return;
@@ -25,7 +25,7 @@ const TagInput = ({ value = [], onChange, placeholder = "Add tags...", className
       console.error('Error fetching tags:', error);
       setSuggestions([]);
     }
-  };
+  }, [value]);
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
@@ -33,7 +33,7 @@ const TagInput = ({ value = [], onChange, placeholder = "Add tags...", className
     }, 300);
 
     return () => clearTimeout(debounceTimer);
-  }, [inputValue, value]);
+  }, [inputValue, fetchSuggestions]);
 
   const addTag = (tagName) => {
     if (tagName && !value.includes(tagName)) {

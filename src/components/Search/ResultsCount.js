@@ -27,7 +27,7 @@ const ResultsCount = ({ colorTheme = "blue" }) => {
             {query && (
               <>
                 <span> for </span>
-                <span className="font-medium">"{query}"</span>
+                <span className="font-medium">&ldquo;{query}&ldquo;</span>
               </>
             )}
           </>

@@ -169,7 +169,7 @@ export default function PromptClassifier({ onCategoryClick }) {
                 <div className="mb-3">
 
                   <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
-                    <p className="text-gray-700 italic">"{item.text}"</p>
+                    <p className="text-gray-700 italic">&ldquo;{item.text}&ldquo;</p>
                   </div>
                 </div>
 
