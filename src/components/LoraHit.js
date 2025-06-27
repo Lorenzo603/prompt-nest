@@ -128,33 +128,6 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
             </div>
           )}
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {hit.filename && (
-                <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
-                  <svg className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                  </svg>
-                  <div>
-                    <span className="text-sm font-medium text-blue-800">Filename:</span>
-                    <span className="text-sm text-blue-700 ml-2 font-mono">{hit.filename}</span>
-                  </div>
-                </div>
-              )}
-              {hit.publishedDate && (
-                <div className="flex items-center gap-2 p-3 bg-green-50 rounded-lg border border-green-200">
-                  <svg className="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M16.5,16H7.5V14.5H16.5V16M19,12H5V10.5H19V12M16.5,8H7.5V6.5H16.5V8Z" />
-                  </svg>
-                  <div>
-                    <span className="text-sm font-medium text-green-800">Published:</span>
-                    <span className="text-sm text-green-700 ml-2 font-medium">{formatDate(hit.publishedDate)}</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
           {hit.triggerWords && hit.triggerWords.length > 0 && (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -203,7 +176,7 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
                     rel="noopener noreferrer"
                     className="text-purple-600 hover:text-purple-800 text-sm p-2 bg-purple-50 rounded-md hover:bg-purple-100 transition-colors break-all border border-purple-200"
                   >
-                    {url.length > 60 ? `${url.substring(0, 60)}...` : url}
+                    {url.length > 100 ? `${url.substring(0, 100)}...` : url}
                   </a>
                 ))}
               </div>
@@ -223,6 +196,33 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
               </div>
             </div>
           )}
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {hit.filename && (
+                <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
+                  <svg className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                  </svg>
+                  <div>
+                    <span className="text-sm font-medium text-blue-800">Filename:</span>
+                    <span className="text-sm text-blue-700 ml-2 font-mono">{hit.filename}</span>
+                  </div>
+                </div>
+              )}
+              {hit.publishedDate && (
+                <div className="flex items-center gap-2 p-3 bg-green-50 rounded-lg border border-green-200">
+                  <svg className="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M16.5,16H7.5V14.5H16.5V16M19,12H5V10.5H19V12M16.5,8H7.5V6.5H16.5V8Z" />
+                  </svg>
+                  <div>
+                    <span className="text-sm font-medium text-green-800">Published:</span>
+                    <span className="text-sm text-green-700 ml-2 font-medium">{formatDate(hit.publishedDate)}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
         </div>
 
