@@ -32,7 +32,7 @@ const links = [
 	{
 		href: "/loras",
 		icon: "/window.svg",
-		label: "Loras",
+		label: "LoRAs",
 		alt: "Loras Icon",
 	},
 ];
