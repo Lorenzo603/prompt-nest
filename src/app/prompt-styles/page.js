@@ -10,40 +10,11 @@ export default function PromptStylesPage() {
   const promptStyles = [
     {
       id: 1,
-      title: "Photorealistic Portrait",
-      imageUrl: "/placeholder-image-1.jpg",
-      prompt: "photorealistic portrait, professional lighting, high resolution, detailed skin texture, shallow depth of field"
+      title: "Title sample",
+      imageUrl: "/img/title-sample.png",
+      prompt: "Example prompt for the style, describing the visual elements, colors, and mood to be captured in the image. Use descriptive language to evoke a specific atmosphere or theme."
     },
-    {
-      id: 2,
-      title: "Digital Art",
-      imageUrl: "/placeholder-image-2.jpg", 
-      prompt: "digital art, vibrant colors, fantasy style, detailed illustration, concept art"
-    },
-    {
-      id: 3,
-      title: "Oil Painting",
-      imageUrl: "/placeholder-image-3.jpg",
-      prompt: "oil painting style, classical art, brush strokes visible, rich colors, traditional technique"
-    },
-    {
-      id: 4,
-      title: "Anime Style",
-      imageUrl: "/placeholder-image-4.jpg",
-      prompt: "anime style, cel shading, bright colors, manga influence, Japanese animation"
-    },
-    {
-      id: 5,
-      title: "Watercolor",
-      imageUrl: "/placeholder-image-5.jpg",
-      prompt: "watercolor painting, soft edges, flowing colors, artistic medium, translucent effects"
-    },
-    {
-      id: 6,
-      title: "Cyberpunk",
-      imageUrl: "/placeholder-image-6.jpg",
-      prompt: "cyberpunk style, neon colors, futuristic, high tech, urban dystopia, glowing elements"
-    }
+
   ];
 
   const handleImageClick = async (style) => {
@@ -65,12 +36,12 @@ export default function PromptStylesPage() {
             <h1 className="text-3xl font-bold text-slate-100 mb-2">Prompt Styles</h1>
             <p className="text-slate-300">Click on any image to copy its prompt to clipboard</p>
           </div>
-          
+
           {/* Styles Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {promptStyles.map((style) => (
-              <div 
-                key={style.id} 
+              <div
+                key={style.id}
                 className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer group"
                 onClick={() => handleImageClick(style)}
               >
@@ -84,9 +55,9 @@ export default function PromptStylesPage() {
                       e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDIwIDAgTCAwIDAgMCAyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjY2NjIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzk5OSIgZm9udC1zaXplPSIxNHB4Ij5JbWFnZSBQbGFjZWhvbGRlcjwvdGV4dD48L3N2Zz4=';
                     }}
                   />
-                  
+
                   {/* Copy Indicator Overlay */}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm font-medium">
                       Click to copy
                     </div>
@@ -111,7 +82,7 @@ export default function PromptStylesPage() {
                   <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-300">
                     {style.title}
                   </h3>
-                  
+
                   {/* Prompt */}
                   <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
                     {style.prompt}
