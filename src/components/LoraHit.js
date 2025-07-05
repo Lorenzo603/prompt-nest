@@ -120,97 +120,104 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
 
         {/* Content Section */}
         <div className="p-4 space-y-4">
-          {/* Image Display */}
-          {hit.imageUrl && (
-            <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border">
-              <img
-                src={hit.imageUrl}
-                alt={hit.name}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
-          )}
+          <div className="flex gap-4">
+            {/* Left side - Main content */}
+            <div className="flex-1 space-y-4">
+              {hit.description && (
+                <div className="bg-gray-50 rounded-lg p-3 border-l-4 border-purple-400">
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    <Highlight hit={hit} attribute="description" />
+                  </p>
+                </div>
+              )}
 
-          {hit.description && (
-            <div className="bg-gray-50 rounded-lg p-3 border-l-4 border-purple-400">
-              <p className="text-gray-700 text-sm leading-relaxed">
-                <Highlight hit={hit} attribute="description" />
-              </p>
-            </div>
-          )}
-
-          {hit.triggerWords && hit.triggerWords.length > 0 && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-yellow-600" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
-                </svg>
-                <span className="text-sm font-semibold text-gray-700">Trigger Words:</span>
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                {hit.triggerWords.map((word, index) => (
-                  <div key={index} className="relative">
-                    <button
-                      onClick={() => copyTriggerWord(word, index)}
-                      className="bg-yellow-100 text-yellow-800 text-sm px-3 py-1.5 rounded-full hover:bg-yellow-200 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 border border-yellow-200 font-medium"
-                    >
-                      <Highlight hit={hit} attribute={`triggerWords.${index}`} />
-                    </button>
-
-                    {/* Tooltip */}
-                    {copiedTriggerWords[index] && (
-                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-xs rounded shadow-lg z-10 whitespace-nowrap">
-                        Copied!
-                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
-                      </div>
-                    )}
+              {hit.triggerWords && hit.triggerWords.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-yellow-600" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+                    </svg>
+                    <span className="text-sm font-semibold text-gray-700">Trigger Words:</span>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
+                  <div className="flex gap-2 flex-wrap">
+                    {hit.triggerWords.map((word, index) => (
+                      <div key={index} className="relative">
+                        <button
+                          onClick={() => copyTriggerWord(word, index)}
+                          className="bg-yellow-100 text-yellow-800 text-sm px-3 py-1.5 rounded-full hover:bg-yellow-200 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 border border-yellow-200 font-medium"
+                        >
+                          <Highlight hit={hit} attribute={`triggerWords.${index}`} />
+                        </button>
 
-          {hit.urls && hit.urls.length > 0 && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M10.59,13.41C11,13.8 11,14.4 10.59,14.81C10.2,15.2 9.6,15.2 9.19,14.81L7.77,13.39C7.36,13 7.36,12.4 7.77,12L9.19,10.59C9.6,10.2 10.2,10.2 10.59,10.59C11,11 11,11.6 10.59,12L10.24,12.35L11.65,13.76L13.06,12.35L12.71,12C12.3,11.6 12.3,11 12.71,10.59C13.1,10.2 13.7,10.2 14.11,10.59L15.53,12C15.94,12.4 15.94,13 15.53,13.39L14.11,14.81C13.7,15.2 13.1,15.2 12.71,14.81C12.3,14.4 12.3,13.8 12.71,13.41L13.06,13.06L11.65,11.65L10.24,13.06L10.59,13.41Z" />
-                </svg>
-                <span className="text-sm font-semibold text-gray-700">URLs:</span>
-              </div>
-              <div className="grid gap-2">
-                {hit.urls.map((url, index) => (
-                  <a
-                    key={index}
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-purple-600 hover:text-purple-800 text-sm p-2 bg-purple-50 rounded-md hover:bg-purple-100 transition-colors break-all border border-purple-200"
-                  >
-                    {url.length > 100 ? `${url.substring(0, 100)}...` : url}
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
+                        {/* Tooltip */}
+                        {copiedTriggerWords[index] && (
+                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-xs rounded shadow-lg z-10 whitespace-nowrap">
+                            Copied!
+                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-          {hit.settings && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-gray-600" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
-                </svg>
-                <span className="text-sm font-semibold text-gray-700">Settings:</span>
-              </div>
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <pre className="text-xs text-gray-700 whitespace-pre-wrap font-mono leading-relaxed">{hit.settings}</pre>
-              </div>
+              {hit.urls && hit.urls.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M10.59,13.41C11,13.8 11,14.4 10.59,14.81C10.2,15.2 9.6,15.2 9.19,14.81L7.77,13.39C7.36,13 7.36,12.4 7.77,12L9.19,10.59C9.6,10.2 10.2,10.2 10.59,10.59C11,11 11,11.6 10.59,12L10.24,12.35L11.65,13.76L13.06,12.35L12.71,12C12.3,11.6 12.3,11 12.71,10.59C13.1,10.2 13.7,10.2 14.11,10.59L15.53,12C15.94,12.4 15.94,13 15.53,13.39L14.11,14.81C13.7,15.2 13.1,15.2 12.71,14.81C12.3,14.4 12.3,13.8 12.71,13.41L13.06,13.06L11.65,11.65L10.24,13.06L10.59,13.41Z" />
+                    </svg>
+                    <span className="text-sm font-semibold text-gray-700">URLs:</span>
+                  </div>
+                  <div className="grid gap-2">
+                    {hit.urls.map((url, index) => (
+                      <a
+                        key={index}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-purple-600 hover:text-purple-800 text-sm p-2 bg-purple-50 rounded-md hover:bg-purple-100 transition-colors break-all border border-purple-200"
+                      >
+                        {url.length > 100 ? `${url.substring(0, 100)}...` : url}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {hit.settings && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-gray-600" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
+                    </svg>
+                    <span className="text-sm font-semibold text-gray-700">Settings:</span>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <pre className="text-xs text-gray-700 whitespace-pre-wrap font-mono leading-relaxed">{hit.settings}</pre>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+
+            {/* Right side - Image */}
+            {hit.imageUrl && (
+              <div className="w-64 flex-shrink-0">
+                <div className="relative w-full h-96 bg-gray-100 rounded-lg overflow-hidden border">
+                  <img
+                    src={hit.imageUrl}
+                    alt={hit.name}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+              </div>
+            )}
+          </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
