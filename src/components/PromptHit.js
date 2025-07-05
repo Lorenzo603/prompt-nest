@@ -46,7 +46,7 @@ const PromptHit = ({ hit, onPromptUpdated }) => {
 
   return (
     <>
-      <div className="bg-white shadow-md rounded-lg overflow-hidden mb-4 border border-gray-200 hover:shadow-lg transition-shadow">
+      <div className="bg-white shadow-md rounded-lg mb-4 border border-gray-200 hover:shadow-lg transition-shadow">
         {/* Header Section */}
         <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-4 border-b border-gray-100">
           <div className="flex items-center justify-between">
