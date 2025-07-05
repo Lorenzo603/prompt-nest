@@ -24,7 +24,7 @@ export const getLoras = async () => {
   return loras;
 };
 
-export const addLora = async ({ name, description, filename, triggerWords, urls, settings, baseModel, tags, version, publishedDate, hash }) => {
+export const addLora = async ({ name, description, filename, triggerWords, urls, settings, baseModel, tags, version, publishedDate, hash, imageUrl }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -51,6 +51,7 @@ export const addLora = async ({ name, description, filename, triggerWords, urls,
     version: version,
     publishedDate: publishedDate ? new Date(publishedDate) : null,
     hash: hash,
+    imageUrl: imageUrl,
   }).returning();
 
   // Index in Typesense
@@ -69,6 +70,7 @@ export const addLora = async ({ name, description, filename, triggerWords, urls,
       version: inserted.version,
       publishedDate: inserted.publishedDate,
       hash: inserted.hash,
+      imageUrl: inserted.imageUrl,
     });
   } catch (err) {
     console.error('Typesense indexing error:', err);
@@ -77,7 +79,7 @@ export const addLora = async ({ name, description, filename, triggerWords, urls,
   return { message: "Lora added successfully" };
 };
 
-export const updateLora = async ({ id, name, description, filename, triggerWords, urls, settings, baseModel, tags, version, publishedDate, hash }) => {
+export const updateLora = async ({ id, name, description, filename, triggerWords, urls, settings, baseModel, tags, version, publishedDate, hash, imageUrl }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -103,6 +105,7 @@ export const updateLora = async ({ id, name, description, filename, triggerWords
       version: version,
       publishedDate: publishedDate ? new Date(publishedDate) : null,
       hash: hash,
+      imageUrl: imageUrl,
     })
     .where(eq(lorasTable.id, id))
     .returning();
@@ -121,6 +124,7 @@ export const updateLora = async ({ id, name, description, filename, triggerWords
       version: updated.version || '',
       publishedDate: updated.publishedDate ? updated.publishedDate.toISOString() : '',
       hash: updated.hash || '',
+      imageUrl: updated.imageUrl || '',
     });
   } catch (err) {
     console.error('Typesense update error:', err);

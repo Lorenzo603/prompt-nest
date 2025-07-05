@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import TagInput from "./TagInput";
+import ImageUpload from "./ImageUpload";
 
 const DEFAULT_LORA_BASE_MODEL = "SDXL 1.0"; // Default base model for the lora
 
@@ -17,6 +18,7 @@ const LoraForm = ({ onLoraAdded }) => {
     const [version, setVersion] = useState("");
     const [publishedDate, setPublishedDate] = useState("");
     const [hash, setHash] = useState("");
+    const [imageUrl, setImageUrl] = useState("");
     const [error, setError] = useState(null);
 
     const handleSubmit = async (event) => {
@@ -44,6 +46,7 @@ const LoraForm = ({ onLoraAdded }) => {
                     version: version,
                     publishedDate: publishedDate,
                     hash: hash,
+                    imageUrl: imageUrl,
                 }),
             });
             const result = await response.json();
@@ -59,6 +62,7 @@ const LoraForm = ({ onLoraAdded }) => {
             setVersion("");
             setPublishedDate("");
             setHash("");
+            setImageUrl("");
             setError(null);
             onLoraAdded();
         } catch (error) {
@@ -155,6 +159,18 @@ const LoraForm = ({ onLoraAdded }) => {
                             placeholder="Add tags..."
                             className="w-full"
                         />
+
+                        {/* Image Upload */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Lora Image
+                            </label>
+                            <ImageUpload
+                                value={imageUrl}
+                                onChange={setImageUrl}
+                                className="w-full"
+                            />
+                        </div>
                         
                     </div>
                     <div className="flex">

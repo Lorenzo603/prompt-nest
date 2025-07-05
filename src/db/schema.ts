@@ -43,5 +43,6 @@ export const lorasTable = pgTable("loras", {
   publishedDate: timestamp(),
   version: text(),
   hash: text(), // file hash for integrity verification
+  imageUrl: text(), // URL to uploaded image
 });
 

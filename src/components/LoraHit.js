@@ -120,6 +120,21 @@ const LoraHit = ({ hit, onLoraUpdated }) => {
 
         {/* Content Section */}
         <div className="p-4 space-y-4">
+          {/* Image Display */}
+          {hit.imageUrl && (
+            <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border">
+              <img
+                src={hit.imageUrl}
+                alt={hit.name}
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+            </div>
+          )}
+
           {hit.description && (
             <div className="bg-gray-50 rounded-lg p-3 border-l-4 border-purple-400">
               <p className="text-gray-700 text-sm leading-relaxed">

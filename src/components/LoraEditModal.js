@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import TagInput from "./TagInput";
+import ImageUpload from "./ImageUpload";
 
 const LoraEditModal = ({ lora, onClose, onSave }) => {
     const formatDateForInput = (dateString) => {
@@ -26,6 +27,7 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
     const [version, setVersion] = useState(lora.version || "");
     const [publishedDate, setPublishedDate] = useState(formatDateForInput(lora.publishedDate));
     const [hash, setHash] = useState(lora.hash || "");
+    const [imageUrl, setImageUrl] = useState(lora.imageUrl || "");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -87,6 +89,7 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                     version: version,
                     publishedDate: publishedDate,
                     hash: hash,
+                    imageUrl: imageUrl,
                 }),
             });
             
@@ -108,6 +111,7 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                 tags: tagList,
                 version,
                 publishedDate,
+                imageUrl,
             });
         } catch (error) {
             console.error('Update error:', error);
@@ -210,6 +214,18 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                             placeholder="Add tags..."
                             className="w-full"
                         />
+
+                        {/* Image Upload */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Lora Image
+                            </label>
+                            <ImageUpload
+                                value={imageUrl}
+                                onChange={setImageUrl}
+                                className="w-full"
+                            />
+                        </div>
                       
                     </div>
                     
