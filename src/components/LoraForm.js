@@ -79,7 +79,8 @@ const LoraForm = ({ onLoraAdded }) => {
                             >
                                 <option value="SD1.5">SD1.5</option>
                                 <option value="SDXL 1.0">SDXL 1.0</option>
-                                <option value="SD2.1">SD2.1</option>
+                                <option value="Pony">Pony</option>
+                                <option value="Illustrious">Illustrious</option>
                                 <option value="Flux.1 D">Flux.1 D</option>
                                 <option value="Other">Other</option>
                             </select>
