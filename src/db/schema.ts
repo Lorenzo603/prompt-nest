@@ -27,6 +27,7 @@ export const checkpointsTable = pgTable("checkpoints", {
   publishedDate: timestamp(),
   version: text(),
   hash: text(), // file hash for integrity verification
+  imageUrl: text(), // URL to uploaded image
 });
 
 export const lorasTable = pgTable("loras", {

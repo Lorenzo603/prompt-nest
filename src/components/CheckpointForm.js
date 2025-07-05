@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import TagInput from "./TagInput";
+import ImageUpload from "./ImageUpload";
 
 
 const CheckpointForm = ({ onCheckpointAdded }) => {
@@ -16,6 +17,7 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
     const [settings, setSettings] = useState("");
     const [publishedDate, setPublishedDate] = useState("");
     const [hash, setHash] = useState("");
+    const [imageUrl, setImageUrl] = useState("");
 
     const [error, setError] = useState(null);
 
@@ -44,6 +46,7 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
                     version: version,
                     publishedDate: publishedDate,
                     hash: hash,
+                    imageUrl: imageUrl,
                  }),
             });
             const result = await response.json();
@@ -59,6 +62,7 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
             setVersion("");
             setPublishedDate("");
             setHash("");
+            setImageUrl("");
             setError(null);
             onCheckpointAdded();
         } catch (error) {
@@ -153,6 +157,19 @@ const CheckpointForm = ({ onCheckpointAdded }) => {
                             className="w-full"
                             ringColor="green"
                         />
+
+                        {/* Image Upload */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Checkpoint Image
+                            </label>
+                            <ImageUpload
+                                value={imageUrl}
+                                onChange={setImageUrl}
+                                uploadEndpoint="/api/upload/checkpoint-image"
+                                className="w-full"
+                            />
+                        </div>
                     </div>
                     <div className="flex">
                         <button

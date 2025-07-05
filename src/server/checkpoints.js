@@ -25,7 +25,7 @@ export const getCheckpoints = async () => {
 };
 
 export const addCheckpoint = async ({ name, description, filename, 
-    urls, settings, baseModel, relatedModels, tags, version, publishedDate, hash }) => {
+    urls, settings, baseModel, relatedModels, tags, version, publishedDate, hash, imageUrl }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -51,6 +51,7 @@ export const addCheckpoint = async ({ name, description, filename,
     version: version,
     publishedDate: publishedDate ? new Date(publishedDate) : null,
     hash: hash,
+    imageUrl: imageUrl,
   }).returning();
 
   // Index in Typesense
@@ -69,6 +70,7 @@ export const addCheckpoint = async ({ name, description, filename,
       version: inserted.version || '',
       publishedDate: inserted.publishedDate || '',
       hash: inserted.hash || '',
+      imageUrl: inserted.imageUrl || '',
     });
   } catch (err) {
     console.error('Typesense indexing error:', err);
@@ -78,7 +80,7 @@ export const addCheckpoint = async ({ name, description, filename,
 };
 
 export const updateCheckpoint = async ({ id, name, description, filename, 
-    urls, settings, baseModel, relatedModels, tags, version, publishedDate, hash }) => {
+    urls, settings, baseModel, relatedModels, tags, version, publishedDate, hash, imageUrl }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -104,6 +106,7 @@ export const updateCheckpoint = async ({ id, name, description, filename,
       version: version,
       publishedDate: publishedDate ? new Date(publishedDate) : null,
       hash: hash,
+      imageUrl: imageUrl,
     })
     .where(eq(checkpointsTable.id, id))
     .returning();
@@ -122,6 +125,7 @@ export const updateCheckpoint = async ({ id, name, description, filename,
       version: updated.version || '',
       publishedDate: updated.publishedDate ? updated.publishedDate.toISOString() : '',
       hash: updated.hash || '',
+      imageUrl: updated.imageUrl || '',
     });
   } catch (err) {
     console.error('Typesense update error:', err);

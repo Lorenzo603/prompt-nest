@@ -11,6 +11,13 @@ To run:
 npm i
 npm run dev
 ```
+
+## Update Drizzle schema
+```npx drizzle-kit push```
+
+## Run Drizzle Studio
+```npx drizzle-kit studio --port 3001```
+
 ## Docker deployment
 
 On Macos, make sure Colima is started
@@ -29,7 +36,7 @@ scp prompt-nest.tar user@your-vps-ip:/path/on/vps/
 on VPS:
 ```bash
 docker load -i prompt-nest.tar
-docker run -d -p 5000:4000 prompt-nest
+docker run -d -p 5000:4000 -v /opt/prompt-nest/dam:/dam prompt-nest
 ```
 
 Inspect container from inside :

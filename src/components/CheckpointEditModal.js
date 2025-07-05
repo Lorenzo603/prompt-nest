@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import TagInput from "./TagInput";
+import ImageUpload from "./ImageUpload";
 
 const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
     const formatDateForInput = (dateString) => {
@@ -26,6 +27,7 @@ const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
     const [version, setVersion] = useState(checkpoint.version || "");
     const [publishedDate, setPublishedDate] = useState(formatDateForInput(checkpoint.publishedDate));
     const [hash, setHash] = useState(checkpoint.hash || "");
+    const [imageUrl, setImageUrl] = useState(checkpoint.imageUrl || "");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -86,6 +88,7 @@ const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
                     version: version,
                     publishedDate: publishedDate,
                     hash: hash,
+                    imageUrl: imageUrl,
                 }),
             });
             
@@ -107,6 +110,7 @@ const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
                 tags: tagList,
                 version,
                 publishedDate,
+                imageUrl,
             });
         } catch (error) {
             console.error('Update error:', error);
@@ -212,6 +216,19 @@ const CheckpointEditModal = ({ checkpoint, onClose, onSave }) => {
                             className="w-full"
                             ringColor="green"
                         />
+
+                        {/* Image Upload */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Checkpoint Image
+                            </label>
+                            <ImageUpload
+                                value={imageUrl}
+                                onChange={setImageUrl}
+                                uploadEndpoint="/api/upload/checkpoint-image"
+                                className="w-full"
+                            />
+                        </div>
                     </div>
                     
                     

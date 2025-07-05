@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 
-const ImageUpload = ({ value, onChange, className = "" }) => {
+const ImageUpload = ({ value, onChange, className = "", uploadEndpoint = "/api/upload/lora-image" }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
@@ -43,7 +43,7 @@ const ImageUpload = ({ value, onChange, className = "" }) => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/upload/lora-image', {
+      const response = await fetch(uploadEndpoint, {
         method: 'POST',
         body: formData,
       });
