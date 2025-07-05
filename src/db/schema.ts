@@ -6,6 +6,7 @@ export const promptsTable = pgTable("prompts", {
   creationDate: timestamp().notNull(),
   type: varchar({ length: 32 }), // e.g., 'code', 'image', 'audio', etc.
   tags: text().array().default([]), // optional list of tags
+  imageUrl: text(), // URL to uploaded image
 });
 
 export const tagsTable = pgTable("tags", {

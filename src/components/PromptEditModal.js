@@ -2,11 +2,13 @@
 
 import React, { useState } from "react";
 import TagInput from "./TagInput";
+import ImageUpload from "./ImageUpload";
 
 const PromptEditModal = ({ prompt, onClose, onSave }) => {
     const [text, setText] = useState(prompt.text || "");
     const [type, setType] = useState(prompt.type || "image");
     const [tags, setTags] = useState(prompt.tags || []);
+    const [imageUrl, setImageUrl] = useState(prompt.imageUrl || "");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -30,6 +32,7 @@ const PromptEditModal = ({ prompt, onClose, onSave }) => {
                     text: text,
                     type: type,
                     tags: tagList,
+                    imageUrl: imageUrl,
                 }),
             });
             
@@ -94,6 +97,19 @@ const PromptEditModal = ({ prompt, onClose, onSave }) => {
                                 className="w-full"
                                 ringColor="blue"
                             />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Image
+                            </label>
+                            <ImageUpload
+                                value={imageUrl}
+                                onChange={setImageUrl}
+                                uploadEndpoint="/api/upload/prompt-image"
+                                className="w-full"
+                            />
+                            
                         </div>
                         
                         {error && (

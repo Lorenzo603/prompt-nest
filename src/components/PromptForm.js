@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import TagInput from "./TagInput";
+import ImageUpload from "./ImageUpload";
 
 const DEFAULT_PROMPT_TYPE = "image"; // Default type for the prompt
 
@@ -9,6 +10,7 @@ const PromptForm = ({ onPromptAdded }) => {
     const [promptText, setPromptText] = useState("");
     const [promptType, setPromptType] = useState(DEFAULT_PROMPT_TYPE);
     const [tags, setTags] = useState([]);
+    const [imageUrl, setImageUrl] = useState("");
     const [error, setError] = useState(null);
 
     const handleSubmit = async (event) => {
@@ -22,13 +24,14 @@ const PromptForm = ({ onPromptAdded }) => {
             const response = await fetch("/api/prompts", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text: promptText, type: promptType, tags: tagList }),
+                body: JSON.stringify({ text: promptText, type: promptType, tags: tagList, imageUrl }),
             });
             const result = await response.json();
             console.log(result);
             setPromptText(""); // Clear input on success
             setPromptType(DEFAULT_PROMPT_TYPE); // Reset type to default
             setTags([]);
+            setImageUrl(""); // Clear image URL
             setError(null);
             onPromptAdded();
         } catch (error) {
@@ -67,6 +70,12 @@ const PromptForm = ({ onPromptAdded }) => {
                             placeholder="Add tags..."
                             className="w-full"
                             ringColor="blue"
+                        />
+                        <ImageUpload
+                            value={imageUrl}
+                            onChange={setImageUrl}
+                            uploadEndpoint="/api/upload/prompt-image"
+                            className="w-full"
                         />
                     </div>
                     <div className="flex">

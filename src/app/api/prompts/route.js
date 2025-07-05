@@ -7,15 +7,15 @@ export async function GET() {
 }
 
 export async function POST(request) {
-  const { text, type, tags } = await request.json();
-  const result = await addPrompt({ text, type, tags });
+  const { text, type, tags, imageUrl } = await request.json();
+  const result = await addPrompt({ text, type, tags, imageUrl });
   return NextResponse.json(result, { status: 201 });
 }
 
 export async function PUT(request) {
   try {
-    const { id, text, type, tags } = await request.json();
-    const result = await updatePrompt({ id, text, type, tags });
+    const { id, text, type, tags, imageUrl } = await request.json();
+    const result = await updatePrompt({ id, text, type, tags, imageUrl });
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

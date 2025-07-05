@@ -46,8 +46,9 @@ const PromptHit = ({ hit, onPromptUpdated }) => {
 
   return (
     <>
-      <div className="bg-white shadow-md rounded-lg p-4 mb-4 border border-gray-200 hover:shadow-lg transition-shadow">
-        <div className="flex items-center justify-between mb-2">
+      <div className="bg-white shadow-md rounded-lg overflow-hidden mb-4 border border-gray-200 hover:shadow-lg transition-shadow">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-2 p-4 pb-0">
           <div className="flex items-center gap-2">
             <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded uppercase">
               <Highlight hit={hit} attribute="type" />
@@ -87,21 +88,46 @@ const PromptHit = ({ hit, onPromptUpdated }) => {
           </div>
         </div>
         
-        <div className="mb-3">
-          <p className="text-gray-800 whitespace-pre-wrap text-sm">
-            <Highlight hit={hit} attribute="text" />
-          </p>
-        </div>
-        
-        <div className="flex justify-between items-center flex-wrap">
-          <div className="flex gap-2 flex-wrap">
-            {hit.tags && hit.tags.length > 0 && hit.tags.map((tag, index) => (
-              <span key={index} className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">
-                <Highlight hit={hit} attribute={`tags.${index}`} />
-              </span>
-            ))}
+        {/* Content Section */}
+        <div className="p-4 pt-0">
+          <div className="flex gap-4">
+            {/* Left side - Main content */}
+            <div className="flex-1 space-y-3">
+              <div>
+                <p className="text-gray-800 whitespace-pre-wrap text-sm">
+                  <Highlight hit={hit} attribute="text" />
+                </p>
+              </div>
+              
+              <div className="flex justify-between items-center flex-wrap">
+                <div className="flex gap-2 flex-wrap">
+                  {hit.tags && hit.tags.length > 0 && hit.tags.map((tag, index) => (
+                    <span key={index} className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">
+                      <Highlight hit={hit} attribute={`tags.${index}`} />
+                    </span>
+                  ))}
+                </div>
+                <span className="text-xs text-gray-500">{new Date(hit.creationDate).toLocaleString()}</span>
+              </div>
+            </div>
+
+            {/* Right side - Image */}
+            {hit.imageUrl && (
+              <div className="w-64 flex-shrink-0">
+                <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border">
+                  <img
+                    src={hit.imageUrl}
+                    alt="Prompt example"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+              </div>
+            )}
           </div>
-          <span className="text-xs text-gray-500">{new Date(hit.creationDate).toLocaleString()}</span>
         </div>
       </div>
       

@@ -24,7 +24,7 @@ export const getPrompts = async () => {
   return prompts;
 };
 
-export const addPrompt = async ({ text, type, tags }) => {
+export const addPrompt = async ({ text, type, tags, imageUrl }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -34,7 +34,7 @@ export const addPrompt = async ({ text, type, tags }) => {
     }
   }
   const creationDate = new Date();
-  const [inserted] = await db.insert(promptsTable).values({ text, type, tags: tagNames, creationDate }).returning();
+  const [inserted] = await db.insert(promptsTable).values({ text, type, tags: tagNames, creationDate, imageUrl }).returning();
 
   // Index in Typesense
   try {
@@ -44,6 +44,7 @@ export const addPrompt = async ({ text, type, tags }) => {
       creationDate: creationDate.toISOString(),
       type: type,
       tags: tagNames,
+      imageUrl: imageUrl || '',
     });
   } catch (err) {
     console.error('Typesense indexing error:', err);
@@ -52,7 +53,7 @@ export const addPrompt = async ({ text, type, tags }) => {
   return { message: "Prompt added successfully" };
 };
 
-export const updatePrompt = async ({ id, text, type, tags }) => {
+export const updatePrompt = async ({ id, text, type, tags, imageUrl }) => {
   // Ensure tags exist in tagsTable and get their names
   let tagNames = Array.isArray(tags) ? tags : [];
   for (const tag of tagNames) {
@@ -67,6 +68,7 @@ export const updatePrompt = async ({ id, text, type, tags }) => {
       text: text, 
       type: type, 
       tags: tagNames,
+      imageUrl: imageUrl,
     })
     .where(eq(promptsTable.id, id))
     .returning();
@@ -77,6 +79,7 @@ export const updatePrompt = async ({ id, text, type, tags }) => {
       text: updated.text,
       type: updated.type,
       tags: tagNames,
+      imageUrl: updated.imageUrl || '',
     });
   } catch (err) {
     console.error('Typesense update error:', err);
