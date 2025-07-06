@@ -7,6 +7,7 @@ import {
   Hits,
   Configure,
   useInstantSearch,
+  Pagination,
 } from "react-instantsearch";
 import LoraHit from "../LoraHit";
 import TagFilter from "../TagFilter";
@@ -92,6 +93,27 @@ const LoraSearch = forwardRef(({ onLoraUpdated }, ref) => {
             <LoraHit {...props} onLoraUpdated={onLoraUpdated} />
           )} 
         />
+        
+        {/* Pagination */}
+        <div className="mt-8 flex justify-center">
+          <Pagination 
+            className="flex items-center gap-2"
+            classNames={{
+              list: "flex items-center gap-1",
+              item: "min-w-[40px] h-10 flex items-center justify-center rounded-md border border-purple-200 bg-white text-purple-700 hover:bg-purple-100 transition-colors cursor-pointer text-sm font-medium",
+              selectedItem: "!bg-purple-600 !text-white !border-purple-600 hover:!bg-purple-700",
+              disabledItem: "opacity-50 cursor-not-allowed hover:bg-white",
+              link: "w-full h-full flex items-center justify-center px-3",
+              previousPageItem: "rounded-l-md",
+              nextPageItem: "rounded-r-md",
+            }}
+            showFirst={true}
+            showLast={true}
+            showPrevious={true}
+            showNext={true}
+            padding={2}
+          />
+        </div>
       </InstantSearch>
     </div>
   );
