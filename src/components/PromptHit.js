@@ -9,6 +9,7 @@ const PromptHit = ({ hit, onPromptUpdated }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showCopiedTooltip, setShowCopiedTooltip] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   const handleCopy = async () => {
     try {
@@ -42,6 +43,10 @@ const PromptHit = ({ hit, onPromptUpdated }) => {
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  const handleImageClick = () => {
+    setIsImageModalOpen(true);
   };
 
   return (
@@ -116,12 +121,12 @@ const PromptHit = ({ hit, onPromptUpdated }) => {
                   <img
                     src={hit.imageUrl}
                     alt="Prompt example"
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                    onClick={handleImageClick}
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
               </div>
             )}
@@ -192,6 +197,38 @@ const PromptHit = ({ hit, onPromptUpdated }) => {
                   {isDeleting ? 'Deleting...' : 'Delete'}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Modal */}
+      {isImageModalOpen && hit.imageUrl && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+          onClick={() => setIsImageModalOpen(false)}
+        >
+          <div 
+            className="max-w-4xl max-h-full relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setIsImageModalOpen(false)}
+              className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors cursor-pointer"
+              aria-label="Close image"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <img
+              src={hit.imageUrl}
+              alt="Prompt example"
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+            />
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 rounded-b-lg">
+              <h3 className="text-white font-semibold text-lg">Prompt Example</h3>
+              <p className="text-gray-300 text-sm">Type: {hit.type}</p>
             </div>
           </div>
         </div>
