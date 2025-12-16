@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export function middleware(request) {
+export function proxy(request) {
   // Get the access token from environment
   const requiredToken = process.env.ACCESS_TOKEN;
   console.log('Access Token:', requiredToken ? 'Configured' : 'Not Configured');
