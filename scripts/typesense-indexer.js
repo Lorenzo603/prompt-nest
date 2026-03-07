@@ -9,7 +9,7 @@ class TypesenseManager {
         this.postgresConfig = postgresConfig;
     }
 
-    async reindexCollection(collectionName, tableName) {
+    async reindexCheckpoints(collectionName, tableName) {
         let client;
         try {
             // Connect to PostgreSQL database
@@ -17,7 +17,7 @@ class TypesenseManager {
             await client.connect();
 
             // Fetch all documents from the specified table
-            const query = `SELECT id, name, description, "triggerWords", "baseModel", filename, urls, settings, tags, version, "publishedDate", hash FROM ${tableName}`;
+            const query = `SELECT id, name, description, "creationDate", tags, filename, urls, "baseModel", "relatedModels", settings, "publishedDate", version, hash, "imageUrl" FROM ${tableName}`;
             const result = await client.query(query);
 
             const documents = result.rows;
@@ -28,30 +28,99 @@ class TypesenseManager {
                     id,
                     name,
                     description,
-                    triggerWords,
-                    baseModel,
+                    creationDate,
+                    tags,
                     filename,
                     urls,
+                    baseModel,
+                    relatedModels,
                     settings,
-                    tags,
-                    version,
                     publishedDate,
+                    version,
                     hash,
+                    imageUrl,
                 } = doc;
 
                 // Prepare the document payload
                 const payload = {
-                    name: name,
-                    description: description,
-                    triggerWords: triggerWords ? triggerWords : [],
-                    baseModel: baseModel,
+                    name: name || '',
+                    description: description || '',
+                    creationDate: creationDate ? new Date(creationDate).toISOString() : '',
+                    tags: tags ? tags : [],
                     filename: filename || '',
                     urls: urls ? urls : [],
+                    baseModel: baseModel,
+                    relatedModels: relatedModels ? relatedModels : [],
                     settings: settings || '',
-                    tags: tags ? tags : [],
-                    version: version || '',
                     publishedDate: publishedDate ? new Date(publishedDate).toISOString() : '',
+                    version: version || '',
                     hash: hash || '',
+                    imageUrl: imageUrl || '',
+                };
+
+                // Update the document in Typesense
+                await this.typesenseClient.collections(collectionName).documents(String(id)).update(payload);
+            }
+
+            console.log(`Successfully re-indexed all documents in the '${collectionName}' collection.`);
+        } catch (error) {
+            console.error(`Error during re-indexing: ${error.message}`);
+        } finally {
+            // Close the database connection
+            if (client) {
+                await client.end();
+            }
+        }
+    }
+
+
+    async reindexLoras(collectionName, tableName) {
+        let client;
+        try {
+            // Connect to PostgreSQL database
+            client = new Client(this.postgresConfig);
+            await client.connect();
+
+            // Fetch all documents from the specified table
+            const query = `SELECT id, name, description, "creationDate", tags, filename, "triggerWords", urls, settings, "baseModel", "publishedDate", version, hash, "imageUrl" FROM ${tableName}`;
+            const result = await client.query(query);
+
+            const documents = result.rows;
+
+            // Re-index each document in the Typesense collection
+            for (const doc of documents) {
+                const {
+                    id,
+                    name,
+                    description,
+                    creationDate,
+                    tags,
+                    filename,
+                    triggerWords,
+                    urls,
+                    settings,
+                    baseModel,
+                    publishedDate,
+                    version,
+                    hash,
+                    imageUrl,
+                } = doc;
+
+                // Prepare the document payload
+                const payload = {
+                    name: name || '',
+                    description: description || '',
+                    creationDate: creationDate ? new Date(creationDate).toISOString() : '',
+                    tags: tags ? tags : [],
+                    filename: filename || '',
+                    triggerWords: triggerWords ? triggerWords : [],
+                    urls: urls ? urls : [],
+                    settings: settings || '',
+                    baseModel: baseModel,
+                    publishedDate: publishedDate ? new Date(publishedDate).toISOString() : '',
+                    version: version || '',
+                    hash: hash || '',
+                    imageUrl: imageUrl || '',
                 };
 
                 // Update the document in Typesense
@@ -91,5 +160,8 @@ const postgresConfig = {
 
 const manager = new TypesenseManager(typesenseClient, postgresConfig);
 
+// // Re-index the 'promptnest_checkpoints' collection from the 'checkpoints' table
+// manager.reindexCheckpoints('promptnest_checkpoints', 'checkpoints');
+
 // Re-index the 'promptnest_loras' collection from the 'loras' table
-manager.reindexCollection('promptnest_loras', 'loras');
+manager.reindexLoras('promptnest_loras', 'loras');
