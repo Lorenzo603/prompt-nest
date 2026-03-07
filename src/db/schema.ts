@@ -5,6 +5,11 @@ export const baseModelsTable = pgTable("baseModels", {
   name: varchar({ length: 128 }).notNull().unique(),
 });
 
+export const promptTypesTable = pgTable("promptTypes", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 64 }).notNull().unique(),
+});
+
 export const promptsTable = pgTable("prompts", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   text: text().notNull(),

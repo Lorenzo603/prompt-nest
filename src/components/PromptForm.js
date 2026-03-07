@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TagInput from "./TagInput";
 import ImageUpload from "./ImageUpload";
 
@@ -11,7 +11,34 @@ const PromptForm = ({ onPromptAdded }) => {
     const [promptType, setPromptType] = useState(DEFAULT_PROMPT_TYPE);
     const [tags, setTags] = useState([]);
     const [imageUrl, setImageUrl] = useState("");
+    const [promptTypeOptions, setPromptTypeOptions] = useState([]);
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const loadPromptTypes = async () => {
+            try {
+                const response = await fetch("/api/prompt-types");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch prompt types");
+                }
+
+                const promptTypes = await response.json();
+                const typeNames = promptTypes.map((promptTypeItem) => promptTypeItem.name).filter(Boolean);
+                setPromptTypeOptions(typeNames);
+
+                if (typeNames.length > 0) {
+                    const defaultType = typeNames.includes(DEFAULT_PROMPT_TYPE)
+                        ? DEFAULT_PROMPT_TYPE
+                        : typeNames[0];
+                    setPromptType(defaultType);
+                }
+            } catch (fetchError) {
+                console.error(fetchError);
+            }
+        };
+
+        loadPromptTypes();
+    }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -29,7 +56,11 @@ const PromptForm = ({ onPromptAdded }) => {
             const result = await response.json();
             console.log(result);
             setPromptText(""); // Clear input on success
-            setPromptType(DEFAULT_PROMPT_TYPE); // Reset type to default
+            setPromptType(
+                promptTypeOptions.includes(DEFAULT_PROMPT_TYPE)
+                    ? DEFAULT_PROMPT_TYPE
+                    : (promptTypeOptions[0] || "")
+            );
             setTags([]);
             setImageUrl(""); // Clear image URL
             setError(null);
@@ -50,11 +81,14 @@ const PromptForm = ({ onPromptAdded }) => {
                                 onChange={e => setPromptType(e.target.value)}
                                 className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50 sm:w-40"
                             >
-                                <option value="code">Code</option>
-                                <option value="image">Image</option>
-                                <option value="audio">Audio</option>
-                                <option value="writing">Writing</option>
-                                <option value="other">Other</option>
+                                {promptTypeOptions.length === 0 && (
+                                    <option value="">No prompt types available</option>
+                                )}
+                                {promptTypeOptions.map((typeName) => (
+                                    <option key={typeName} value={typeName}>
+                                        {typeName}
+                                    </option>
+                                ))}
                             </select>
                             <textarea
                                 value={promptText}

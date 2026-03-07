@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TagInput from "./TagInput";
 import ImageUpload from "./ImageUpload";
 
@@ -9,8 +9,28 @@ const PromptEditModal = ({ prompt, onClose, onSave }) => {
     const [type, setType] = useState(prompt.type || "image");
     const [tags, setTags] = useState(prompt.tags || []);
     const [imageUrl, setImageUrl] = useState(prompt.imageUrl || "");
+    const [promptTypeOptions, setPromptTypeOptions] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const loadPromptTypes = async () => {
+            try {
+                const response = await fetch("/api/prompt-types");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch prompt types");
+                }
+
+                const promptTypes = await response.json();
+                const typeNames = promptTypes.map((promptTypeItem) => promptTypeItem.name).filter(Boolean);
+                setPromptTypeOptions(typeNames);
+            } catch (fetchError) {
+                console.error(fetchError);
+            }
+        };
+
+        loadPromptTypes();
+    }, []);
 
     const handleSave = async () => {
         if (!text.trim()) {
@@ -65,11 +85,17 @@ const PromptEditModal = ({ prompt, onClose, onSave }) => {
                                 onChange={(e) => setType(e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 bg-gray-50"
                             >
-                                <option value="code">Code</option>
-                                <option value="image">Image</option>
-                                <option value="audio">Audio</option>
-                                <option value="writing">Writing</option>
-                                <option value="other">Other</option>
+                                {type && !promptTypeOptions.includes(type) && (
+                                    <option value={type}>{type}</option>
+                                )}
+                                {promptTypeOptions.length === 0 && (
+                                    <option value="">No prompt types available</option>
+                                )}
+                                {promptTypeOptions.map((typeName) => (
+                                    <option key={typeName} value={typeName}>
+                                        {typeName}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                         
