@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TagInput from "./TagInput";
 import ImageUpload from "./ImageUpload";
 
@@ -19,7 +19,34 @@ const LoraForm = ({ onLoraAdded }) => {
     const [publishedDate, setPublishedDate] = useState("");
     const [hash, setHash] = useState("");
     const [imageUrl, setImageUrl] = useState("");
+    const [baseModelOptions, setBaseModelOptions] = useState([]);
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const loadBaseModels = async () => {
+            try {
+                const response = await fetch("/api/base-models");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch base models");
+                }
+
+                const models = await response.json();
+                const modelNames = models.map((model) => model.name).filter(Boolean);
+                setBaseModelOptions(modelNames);
+
+                if (modelNames.length > 0) {
+                    const defaultModel = modelNames.includes(DEFAULT_LORA_BASE_MODEL)
+                        ? DEFAULT_LORA_BASE_MODEL
+                        : modelNames[0];
+                    setBaseModel(defaultModel);
+                }
+            } catch (fetchError) {
+                console.error(fetchError);
+            }
+        };
+
+        loadBaseModels();
+    }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -57,7 +84,11 @@ const LoraForm = ({ onLoraAdded }) => {
             setTriggerWords("");
             setUrls("");
             setSettings("");
-            setBaseModel(DEFAULT_LORA_BASE_MODEL); // Reset base model to default
+            setBaseModel(
+                baseModelOptions.includes(DEFAULT_LORA_BASE_MODEL)
+                    ? DEFAULT_LORA_BASE_MODEL
+                    : (baseModelOptions[0] || "")
+            );
             setTags([]);
             setVersion("");
             setPublishedDate("");
@@ -81,12 +112,14 @@ const LoraForm = ({ onLoraAdded }) => {
                                 onChange={e => setBaseModel(e.target.value)}
                                 className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50 sm:w-40"
                             >
-                                <option value="SD1.5">SD1.5</option>
-                                <option value="SDXL 1.0">SDXL 1.0</option>
-                                <option value="Pony">Pony</option>
-                                <option value="Illustrious">Illustrious</option>
-                                <option value="Flux.1 D">Flux.1 D</option>
-                                <option value="Other">Other</option>
+                                {baseModelOptions.length === 0 && (
+                                    <option value="">No base models available</option>
+                                )}
+                                {baseModelOptions.map((modelName) => (
+                                    <option key={modelName} value={modelName}>
+                                        {modelName}
+                                    </option>
+                                ))}
                             </select>
                             <input
                                 type="text"

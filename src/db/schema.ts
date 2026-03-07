@@ -1,5 +1,10 @@
 import { date, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
+export const baseModelsTable = pgTable("baseModels", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 128 }).notNull().unique(),
+});
+
 export const promptsTable = pgTable("prompts", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   text: text().notNull(),
