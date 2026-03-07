@@ -137,6 +137,54 @@ class TypesenseManager {
             }
         }
     }
+
+    async reindexPrompts(collectionName, tableName) {
+        let client;
+        try {
+            // Connect to PostgreSQL database
+            client = new Client(this.postgresConfig);
+            await client.connect();
+
+            // Fetch all documents from the specified table
+            const query = `SELECT id, text, "creationDate", type, tags, "imageUrl" FROM ${tableName}`;
+            const result = await client.query(query);
+
+            const documents = result.rows;
+
+            // Re-index each document in the Typesense collection
+            for (const doc of documents) {
+                const {
+                    id,
+                    text,
+                    creationDate,
+                    type,
+                    tags,
+                    imageUrl,
+                } = doc;
+
+                // Prepare the document payload
+                const payload = {
+                    text: text || '',
+                    type: type || '',
+                    creationDate: creationDate ? new Date(creationDate).toISOString() : '',
+                    tags: tags ? tags : [],
+                    imageUrl: imageUrl || '',
+                };
+
+                // Update the document in Typesense
+                await this.typesenseClient.collections(collectionName).documents(String(id)).update(payload);
+            }
+
+            console.log(`Successfully re-indexed all documents in the '${collectionName}' collection.`);
+        } catch (error) {
+            console.error(`Error during re-indexing: ${error.message}`);
+        } finally {
+            // Close the database connection
+            if (client) {
+                await client.end();
+            }
+        }
+    }
 }
 
 const typesenseClient = new Typesense.Client({
@@ -163,5 +211,8 @@ const manager = new TypesenseManager(typesenseClient, postgresConfig);
 // // Re-index the 'promptnest_checkpoints' collection from the 'checkpoints' table
 // manager.reindexCheckpoints('promptnest_checkpoints', 'checkpoints');
 
-// Re-index the 'promptnest_loras' collection from the 'loras' table
-manager.reindexLoras('promptnest_loras', 'loras');
+// // Re-index the 'promptnest_loras' collection from the 'loras' table
+// manager.reindexLoras('promptnest_loras', 'loras');
+
+// Re-index the 'promptnest_prompts' collection from the 'prompts' table
+manager.reindexPrompts('promptnest_prompts', 'prompts');
