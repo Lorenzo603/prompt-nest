@@ -12,6 +12,10 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Accept NEXT_PUBLIC vars as build args
+ARG NEXT_PUBLIC_SECRETS_FILE
+RUN if [ -n "$NEXT_PUBLIC_SECRETS_FILE" ]; then echo "$NEXT_PUBLIC_SECRETS_FILE" > .env; fi
+
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN npm run build
