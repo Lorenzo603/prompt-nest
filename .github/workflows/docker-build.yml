@@ -15,17 +15,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create env file
-        run: |
-          touch .env.production
-          echo "${{ secrets.NEXT_PUBLIC_SECRETS }}" > .env.production
-          cat .env.production
-
       - name: Set image name to lowercase
         run: echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
 
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Create env file
+        run: |
+          touch .env.production
+          echo "${{ secrets.NEXT_PUBLIC_SECRETS }}" > .env.production
+          cat .env.production
 
       - name: Build image
         run: |
