@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import TagInput from "./TagInput";
 import ImageUpload from "./ImageUpload";
 
-const DEFAULT_PROMPT_TYPE = "image"; // Default type for the prompt
+const DEFAULT_PROMPT_TYPE = "Image"; // Default type for the prompt
 
 const PromptForm = ({ onPromptAdded }) => {
     const [promptText, setPromptText] = useState("");

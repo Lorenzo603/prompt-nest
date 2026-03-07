@@ -4,11 +4,12 @@ import db from "../db";
 import { promptTypesTable } from "../db/schema";
 
 const PREDEFINED_PROMPT_TYPES = [
-  "code",
-  "image",
-  "audio",
-  "writing",
-  "other",
+  "Code",
+  "Image",
+  "Audio",
+  "Writing",
+  "Other",
+  "Video",
 ];
 
 const ensurePredefinedPromptTypes = async () => {
