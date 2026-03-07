@@ -17,9 +17,9 @@ jobs:
 
       - name: Create env file
         run: |
-          touch .env
-          echo "${{ secrets.NEXT_PUBLIC_SECRETS }}" > .env
-          cat .env
+          touch .env.production
+          echo "${{ secrets.NEXT_PUBLIC_SECRETS }}" > .env.production
+          cat .env.production
 
       - name: Set image name to lowercase
         run: echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
