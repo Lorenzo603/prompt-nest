@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TagInput from "./TagInput";
 import ImageUpload from "./ImageUpload";
 
@@ -28,8 +28,28 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
     const [publishedDate, setPublishedDate] = useState(formatDateForInput(lora.publishedDate));
     const [hash, setHash] = useState(lora.hash || "");
     const [imageUrl, setImageUrl] = useState(lora.imageUrl || "");
+    const [baseModelOptions, setBaseModelOptions] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const loadBaseModels = async () => {
+            try {
+                const response = await fetch("/api/base-models");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch base models");
+                }
+
+                const models = await response.json();
+                const modelNames = models.map((model) => model.name).filter(Boolean);
+                setBaseModelOptions(modelNames);
+            } catch (fetchError) {
+                console.error(fetchError);
+            }
+        };
+
+        loadBaseModels();
+    }, []);
 
     const validateDateFormat = (dateString) => {
         if (!dateString) return true; // Empty date is valid
@@ -143,13 +163,23 @@ const LoraEditModal = ({ lora, onClose, onSave }) => {
                                 placeholder="Lora Version"
                                 className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
                             />
-                            <input
-                                type="text"
+                            <select
                                 value={baseModel}
                                 onChange={(e) => setBaseModel(e.target.value)}
-                                placeholder="Base Model"
                                 className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-800 bg-gray-50"
-                            />
+                            >
+                                {baseModel && !baseModelOptions.includes(baseModel) && (
+                                    <option value={baseModel}>{baseModel}</option>
+                                )}
+                                {baseModelOptions.length === 0 && (
+                                    <option value="">No base models available</option>
+                                )}
+                                {baseModelOptions.map((modelName) => (
+                                    <option key={modelName} value={modelName}>
+                                        {modelName}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         
                         <textarea
