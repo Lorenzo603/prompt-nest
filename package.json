@@ -6,7 +6,8 @@
         "dev": "next dev --turbopack",
         "build": "next build",
         "start": "next start -p 4000",
-        "lint": "next lint"
+        "lint": "next lint",
+        "db:studio": "drizzle-kit studio"
     },
     "dependencies": {
         "@babel/runtime": "^7.27.6",
