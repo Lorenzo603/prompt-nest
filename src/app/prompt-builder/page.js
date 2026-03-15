@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import Sidebar from "../../components/Sidebar";
 import PromptClassifier from "@/components/PromptBuilder/PromptClassifier";
 import PromptBuilder from "@/components/PromptBuilder/PromptBuilder";
+import PromptEnhancer from "@/components/PromptBuilder/PromptEnhancer";
 
 export default function PromptBuilderPage() {
   const promptBuilderRef = useRef();
@@ -18,9 +19,10 @@ export default function PromptBuilderPage() {
     <div className="flex">
       <Sidebar />
       <main className="flex-1 ml-16 md:ml-48 transition-all duration-300">
-        <div className="flex flex-row gap-6 p-4">
-          <section className="flex-1">
+        <div className="flex flex-col xl:flex-row gap-6 p-4">
+          <section className="flex-1 space-y-6">
             <PromptClassifier onCategoryClick={handleCategoryClick} />
+            <PromptEnhancer />
           </section>
           <section className="flex-1">
             <PromptBuilder ref={promptBuilderRef} />
