@@ -3,6 +3,20 @@ import { NextResponse } from "next/server";
 const ENHANCER_SYSTEM_PROMPT =
   "You are an expert at optimizing and refining text prompts for AI Image Generation models (like Stable Diffusion). Your task is to take any user-provided prompt and transform it into a rich, detailed, and highly effective prompt that will produce high-quality, visually striking images. Add descriptive keywords for lighting, lighting direction, lighting quality, style, artistic style, quality tags, subject detail, composition, camera angle, depth of field, atmosphere, mood, and environment. Keep the output as a single cohesive prompt without explanations or commentary.";
 
+const DEFAULT_ENHANCER_TIMEOUT_MS = 30000;
+
+function getEnhancerTimeoutMs() {
+  const raw = process.env.OLLAMA_ENHANCE_TIMEOUT_MS;
+  if (!raw) return DEFAULT_ENHANCER_TIMEOUT_MS;
+
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return DEFAULT_ENHANCER_TIMEOUT_MS;
+  }
+
+  return parsed;
+}
+
 export async function POST(request) {
   try {
     const { prompt } = await request.json();
@@ -22,7 +36,7 @@ export async function POST(request) {
     }
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    const timeoutId = setTimeout(() => controller.abort(), getEnhancerTimeoutMs());
 
     try {
       const response = await fetch(`${process.env.OLLAMA_URL}/api/generate`, {
