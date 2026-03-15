@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
+import { Agent } from "undici";
 
 const ENHANCER_SYSTEM_PROMPT =
   "You are an expert at optimizing and refining text prompts for AI Image Generation models (like Stable Diffusion). Your task is to take any user-provided prompt and transform it into a rich, detailed, and highly effective prompt that will produce high-quality, visually striking images. Add descriptive keywords for lighting, lighting direction, lighting quality, style, artistic style, quality tags, subject detail, composition, camera angle, depth of field, atmosphere, mood, and environment. Keep the output as a single cohesive prompt without explanations or commentary.";
 
 const DEFAULT_ENHANCER_TIMEOUT_MS = 30000;
+const DEFAULT_OLLAMA_HEADERS_TIMEOUT_MS = 310000;
+const DEFAULT_OLLAMA_BODY_TIMEOUT_MS = 0;
 
 function getEnhancerTimeoutMs() {
   const raw = process.env.OLLAMA_ENHANCE_TIMEOUT_MS;
@@ -15,6 +18,31 @@ function getEnhancerTimeoutMs() {
   }
 
   return parsed;
+}
+
+function parsePositiveInt(raw) {
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return null;
+  }
+
+  return parsed;
+}
+
+function getOllamaHeadersTimeoutMs(enhancerTimeoutMs) {
+  const raw = process.env.OLLAMA_HEADERS_TIMEOUT_MS;
+  const parsed = raw ? parsePositiveInt(raw) : null;
+
+  // Keep headers timeout at least slightly above the request timeout unless explicitly configured.
+  return parsed ?? Math.max(DEFAULT_OLLAMA_HEADERS_TIMEOUT_MS, enhancerTimeoutMs + 10000);
+}
+
+function getOllamaBodyTimeoutMs() {
+  const raw = process.env.OLLAMA_BODY_TIMEOUT_MS;
+  const parsed = raw ? parsePositiveInt(raw) : null;
+
+  // 0 disables Undici body timeout (we control total duration with AbortController).
+  return parsed ?? DEFAULT_OLLAMA_BODY_TIMEOUT_MS;
 }
 
 export async function POST(request) {
@@ -35,12 +63,20 @@ export async function POST(request) {
       );
     }
 
+    const timeoutMs = getEnhancerTimeoutMs();
+    const headersTimeoutMs = getOllamaHeadersTimeoutMs(timeoutMs);
+    const bodyTimeoutMs = getOllamaBodyTimeoutMs();
+
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), getEnhancerTimeoutMs());
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
       const response = await fetch(`${process.env.OLLAMA_URL}/api/generate`, {
         method: "POST",
+        dispatcher: new Agent({
+          headersTimeout: headersTimeoutMs,
+          bodyTimeout: bodyTimeoutMs,
+        }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -93,7 +129,11 @@ export async function POST(request) {
         );
       }
 
-      console.error("Error calling Ollama for prompt enhancement:", error);
+      console.error("Error calling Ollama for prompt enhancement:", {
+        name: error?.name,
+        message: error?.message,
+        cause: error?.cause,
+      });
       return NextResponse.json(
         { error: "Unable to reach enhancement service right now." },
         { status: 502 }
