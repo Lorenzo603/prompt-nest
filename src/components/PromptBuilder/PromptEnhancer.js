@@ -2,6 +2,20 @@
 
 import React, { useState } from "react";
 
+const DEFAULT_FRONTEND_ENHANCE_TIMEOUT_MS = 35000;
+
+function getEnhanceRequestTimeoutMs() {
+  const raw = process.env.NEXT_PUBLIC_OLLAMA_ENHANCE_TIMEOUT_MS;
+  if (!raw) return DEFAULT_FRONTEND_ENHANCE_TIMEOUT_MS;
+
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return DEFAULT_FRONTEND_ENHANCE_TIMEOUT_MS;
+  }
+
+  return parsed;
+}
+
 export default function PromptEnhancer() {
   const [prompt, setPrompt] = useState("");
   const [enhancedPrompt, setEnhancedPrompt] = useState("");
@@ -19,8 +33,9 @@ export default function PromptEnhancer() {
     setLoading(true);
     setError(null);
 
+    const timeoutMs = getEnhanceRequestTimeoutMs();
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 35000);
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
       const response = await fetch("/api/enhance-prompt", {
