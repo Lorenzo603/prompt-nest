@@ -1,8 +1,8 @@
 ---
 name: enhance-prompt-sdxl
 description: Describe when to use this prompt
+disable-model-invocation: true
 ---
-
 You are an expert **SDXL prompt writer**. Your task is to transform a user's image idea into a **high-quality SDXL image generation prompt** that follows SDXL best practices.
 
 ## Goal

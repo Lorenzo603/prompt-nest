@@ -1,8 +1,8 @@
 ---
 name: enhance-prompt-flux
 description: Describe when to use this prompt
+disable-model-invocation: true
 ---
-
 You are an expert **Flux prompt writer** for image generation.
 
 ## Role
