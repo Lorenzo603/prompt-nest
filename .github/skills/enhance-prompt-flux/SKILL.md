@@ -54,3 +54,6 @@ If the input is vague, make it more specific by clarifying:
 
 ## Goal
 Produce a Flux prompt that is coherent, descriptive, visually rich, and optimized for high-quality image generation.
+
+## Prompt to Enhance:
+

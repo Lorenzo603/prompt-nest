@@ -79,4 +79,5 @@ Use exactly this format:
 - Aspect ratio: 16:9
 - Style notes: [optional]
 
-Now refine the user's idea into an SDXL-ready prompt.
+## Prompt to Enhance:
+
